@@ -1,0 +1,80 @@
+[
+ {
+  "paper": {
+   "id": "2610.31329",
+   "title": "WeVisOne-VL: Unified Visual Perception from Objects to Pixels",
+   "upvotes": 241,
+   "publishedAt": "2026-10-22T00:00:00.000Z",
+   "submittedOnDailyAt": "2026-10-23T00:00:00.000Z",
+   "summary": "Platzhalter – Originaltext entfernt (Urheberrecht).",
+   "ai_summary": "Platzhalter – Originaltext entfernt (Urheberrecht)."
+  },
+  "publishedAt": "2026-10-21T20:00:00.000Z",
+  "title": "WeVisOne-VL: Unified Visual Perception from Objects to Pixels"
+ },
+ {
+  "paper": {
+   "id": "2610.24738",
+   "title": "Editing Images into Reusable Layers via Compositional Edit-Prior Distillation",
+   "upvotes": 182,
+   "publishedAt": "2026-10-17T00:00:00.000Z",
+   "submittedOnDailyAt": "2026-10-23T00:00:00.000Z",
+   "summary": "Platzhalter – Originaltext entfernt (Urheberrecht).",
+   "ai_summary": "Platzhalter – Originaltext entfernt (Urheberrecht)."
+  },
+  "publishedAt": "2026-10-16T20:00:00.000Z",
+  "title": "Editing Images into Reusable Layers via Compositional Edit-Prior Distillation"
+ },
+ {
+  "paper": {
+   "id": "2610.30926",
+   "title": "Making MLLM Latents Matter: Factor-Aware Predictive Learning for Cinematic Video Generation",
+   "upvotes": 172,
+   "publishedAt": "2026-10-22T08:43:48.000Z",
+   "submittedOnDailyAt": "2026-10-23T00:00:00.000Z",
+   "summary": "Platzhalter – Originaltext entfernt (Urheberrecht).",
+   "ai_summary": "Platzhalter – Originaltext entfernt (Urheberrecht)."
+  },
+  "publishedAt": "2026-10-22T04:43:48.000Z",
+  "title": "Making MLLM Latents Matter: Factor-Aware Predictive Learning for Cinematic Video Generation"
+ },
+ {
+  "paper": {
+   "id": "2610.30468",
+   "title": "SplatLab: Autonomous Scientific Discovery for 3DGS Research",
+   "upvotes": 7,
+   "publishedAt": "2026-10-21T00:00:00.000Z",
+   "submittedOnDailyAt": "2026-10-23T00:00:00.000Z",
+   "summary": "Platzhalter – Originaltext entfernt (Urheberrecht).",
+   "ai_summary": "Platzhalter – Originaltext entfernt (Urheberrecht)."
+  },
+  "publishedAt": "2026-10-20T20:00:00.000Z",
+  "title": "SplatLab: Autonomous Scientific Discovery for 3DGS Research"
+ },
+ {
+  "paper": {
+   "id": "2610.26252",
+   "title": "SEAM: Spectral Embedding Alignment and Merging for Low-Resource TTS",
+   "upvotes": 7,
+   "publishedAt": "2026-10-19T00:00:00.000Z",
+   "submittedOnDailyAt": "2026-10-23T00:00:00.000Z",
+   "summary": "Platzhalter – Originaltext entfernt (Urheberrecht).",
+   "ai_summary": "Platzhalter – Originaltext entfernt (Urheberrecht)."
+  },
+  "publishedAt": "2026-10-18T20:00:00.000Z",
+  "title": "SEAM: Spectral Embedding Alignment and Merging for Low-Resource TTS"
+ },
+ {
+  "paper": {
+   "id": "2610.31474",
+   "title": "Skeleton-Grounded Latent Action Model for Robot World Models",
+   "upvotes": 7,
+   "publishedAt": "2026-10-22T00:00:00.000Z",
+   "submittedOnDailyAt": "2026-10-23T00:00:00.000Z",
+   "summary": "Platzhalter – Originaltext entfernt (Urheberrecht).",
+   "ai_summary": "Platzhalter – Originaltext entfernt (Urheberrecht)."
+  },
+  "publishedAt": "2026-10-21T20:00:00.000Z",
+  "title": "Skeleton-Grounded Latent Action Model for Robot World Models"
+ }
+]

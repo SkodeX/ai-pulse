@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:media="http://search.yahoo.com/mrss/" xml:lang="en-US">
+  <id>tag:github.com,2008:https://github.com/google-gemini/gemini-cli/releases</id>
+  <link type="text/html" rel="alternate" href="https://github.com/google-gemini/gemini-cli/releases"/>
+  <link type="application/atom+xml" rel="self" href="https://github.com/google-gemini/gemini-cli/releases.atom"/>
+  <title>Release notes from gemini-cli</title>
+  <updated>2026-10-25T01:24:02Z</updated>
+  <entry>
+    <id>tag:github.com,2008:Repository/968197216/v0.67.0-nightly.20261025.gcd1b45c2d</id>
+    <updated>2026-10-25T01:31:55Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/google-gemini/gemini-cli/releases/tag/v0.67.0-nightly.20261025.gcd1b45c2d"/>
+    <title>Release v0.67.0-nightly.20261025.gcd1b45c2d</title>
+    <content type="html">&lt;p&gt;Platzhalter – Originaltext entfernt (Urheberrecht).&lt;/p&gt;</content>
+    <author>
+      <name>gemini-cli-robot</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/224641728?s=60&amp;v=4"/>
+  </entry>
+<entry>
+    <id>tag:github.com,2008:Repository/968197216/v0.67.0-nightly.20261024.gcd1b45c2d</id>
+    <updated>2026-10-24T01:15:53Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/google-gemini/gemini-cli/releases/tag/v0.67.0-nightly.20261024.gcd1b45c2d"/>
+    <title>Release v0.67.0-nightly.20261024.gcd1b45c2d</title>
+    <content type="html">&lt;p&gt;Platzhalter – Originaltext entfernt (Urheberrecht).&lt;/p&gt;</content>
+    <author>
+      <name>gemini-cli-robot</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/224641728?s=60&amp;v=4"/>
+  </entry>
+<entry>
+    <id>tag:github.com,2008:Repository/968197216/v0.67.0-nightly.20261023.ga713410ab</id>
+    <updated>2026-10-23T01:35:10Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/google-gemini/gemini-cli/releases/tag/v0.67.0-nightly.20261023.ga713410ab"/>
+    <title>Release v0.67.0-nightly.20261023.ga713410ab</title>
+    <content type="html">&lt;p&gt;Platzhalter – Originaltext entfernt (Urheberrecht).&lt;/p&gt;</content>
+    <author>
+      <name>gemini-cli-robot</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/224641728?s=60&amp;v=4"/>
+  </entry>
+<entry>
+    <id>tag:github.com,2008:Repository/968197216/v0.67.0-nightly.20261022.g09d81bf11</id>
+    <updated>2026-10-22T01:23:52Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/google-gemini/gemini-cli/releases/tag/v0.67.0-nightly.20261022.g09d81bf11"/>
+    <title>Release v0.67.0-nightly.20261022.g09d81bf11</title>
+    <content type="html">&lt;p&gt;Platzhalter – Originaltext entfernt (Urheberrecht).&lt;/p&gt;</content>
+    <author>
+      <name>gemini-cli-robot</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/224641728?s=60&amp;v=4"/>
+  </entry>
+<entry>
+    <id>tag:github.com,2008:Repository/968197216/v0.67.0-nightly.20261021.gd00859d6b</id>
+    <updated>2026-10-21T01:33:29Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/google-gemini/gemini-cli/releases/tag/v0.67.0-nightly.20261021.gd00859d6b"/>
+    <title>Release v0.67.0-nightly.20261021.gd00859d6b</title>
+    <content type="html">&lt;p&gt;Platzhalter – Originaltext entfernt (Urheberrecht).&lt;/p&gt;</content>
+    <author>
+      <name>gemini-cli-robot</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/224641728?s=60&amp;v=4"/>
+  </entry>
+<entry>
+    <id>tag:github.com,2008:Repository/968197216/v0.66.0-preview.0</id>
+    <updated>2026-10-20T21:04:34Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/google-gemini/gemini-cli/releases/tag/v0.66.0-preview.0"/>
+    <title>Release v0.66.0-preview.0</title>
+    <content type="html">&lt;p&gt;Platzhalter – Originaltext entfernt (Urheberrecht).&lt;/p&gt;</content>
+    <author>
+      <name>gemini-cli-robot</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/224641728?s=60&amp;v=4"/>
+  </entry>
+<entry>
+    <id>tag:github.com,2008:Repository/968197216/v0.66.0-nightly.20261020.g76e4d7c04</id>
+    <updated>2026-10-20T01:33:51Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/google-gemini/gemini-cli/releases/tag/v0.66.0-nightly.20261020.g76e4d7c04"/>
+    <title>Release v0.66.0-nightly.20261020.g76e4d7c04</title>
+    <content type="html">&lt;p&gt;Platzhalter – Originaltext entfernt (Urheberrecht).&lt;/p&gt;</content>
+    <author>
+      <name>gemini-cli-robot</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/224641728?s=60&amp;v=4"/>
+  </entry>
+<entry>
+    <id>tag:github.com,2008:Repository/968197216/v0.65.0</id>
+    <updated>2026-10-20T21:17:57Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/google-gemini/gemini-cli/releases/tag/v0.65.0"/>
+    <title>Release v0.65.0</title>
+    <content type="html">&lt;p&gt;Platzhalter – Originaltext entfernt (Urheberrecht).&lt;/p&gt;</content>
+    <author>
+      <name>gemini-cli-robot</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/224641728?s=60&amp;v=4"/>
+  </entry>
+<entry>
+    <id>tag:github.com,2008:Repository/968197216/v0.66.0-nightly.20261019.ged96faedf</id>
+    <updated>2026-10-19T01:34:29Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/google-gemini/gemini-cli/releases/tag/v0.66.0-nightly.20261019.ged96faedf"/>
+    <title>Release v0.66.0-nightly.20261019.ged96faedf</title>
+    <content type="html">&lt;p&gt;Platzhalter – Originaltext entfernt (Urheberrecht).&lt;/p&gt;</content>
+    <author>
+      <name>gemini-cli-robot</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/224641728?s=60&amp;v=4"/>
+  </entry>
+<entry>
+    <id>tag:github.com,2008:Repository/968197216/v0.66.0-nightly.20261018.ged96faedf</id>
+    <updated>2026-10-18T01:34:41Z</updated>
+    <link rel="alternate" type="text/html" href="https://github.com/google-gemini/gemini-cli/releases/tag/v0.66.0-nightly.20261018.ged96faedf"/>
+    <title>Release v0.66.0-nightly.20261018.ged96faedf</title>
+    <content type="html">&lt;p&gt;Platzhalter – Originaltext entfernt (Urheberrecht).&lt;/p&gt;</content>
+    <author>
+      <name>gemini-cli-robot</name>
+    </author>
+    <media:thumbnail height="30" width="30" url="https://avatars.githubusercontent.com/u/224641728?s=60&amp;v=4"/>
+  </entry>
+</feed>

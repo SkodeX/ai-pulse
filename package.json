@@ -1,0 +1,30 @@
+{
+  "name": "ai-pulse",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Öffentliches KI-News-Dashboard: Sammeljob (Heimserver) + PWA (GitHub Pages)",
+  "type": "module",
+  "engines": {
+    "node": ">=24.12"
+  },
+  "scripts": {
+    "collect": "node pipeline/run.ts --stage collect",
+    "smoke": "node pipeline/smoke.ts",
+    "pipeline": "node pipeline/run.ts",
+    "test": "node --test \"pipeline/test/**/*.test.ts\"",
+    "typecheck": "tsc --noEmit -p tsconfig.pipeline.json"
+  },
+  "dependencies": {
+    "@extractus/feed-extractor": "^8",
+    "@mozilla/readability": "^0.6",
+    "linkedom": "^0.18",
+    "normalize-url": "^9",
+    "p-limit": "^7",
+    "tldts": "^7",
+    "zod": "^4"
+  },
+  "devDependencies": {
+    "@types/node": "^24",
+    "typescript": "^7"
+  }
+}

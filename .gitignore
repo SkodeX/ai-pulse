@@ -1,0 +1,9 @@
+node_modules/
+.cache/
+dist/
+*.tmp-*
+.env*
+!.env.example
+.claude/settings.local.json
+worker/.wrangler/
+worker/.dev.vars

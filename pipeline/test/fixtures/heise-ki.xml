@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>urn:uuid:de0d50ac-1222-4cc9-b056-b7e091a9ef65</id>
+    <title>Künstliche Intelligenz</title>
+    <updated>2026-10-24T11:37:00.000Z</updated>
+    <generator>Heise - Content</generator>
+    <author>
+        <name>Heise</name>
+        <uri>https://www.heise.de</uri>
+    </author>
+    <link rel="alternate" href="https://www.heise.de/thema/Kuenstliche-Intelligenz.xml"/>
+    <rights>Copyright (c) Heise Medien</rights>
+    <entry>
+        <title type="html"><![CDATA[OpenAI stellt seine neue Trainingsumgebung vor – ohne Air Gap]]></title>
+        <id>urn:bid:5188434</id>
+        <link href="https://www.heise.de/news/OpenAI-stellt-seine-neue-Trainingsumgebung-vor-ohne-Air-Gap-11499163.html?wt_mc=rss.red.ho.themen.k%C3%BCnstliche+intelligenz.beitrag.beitrag"/>
+        <updated>2026-10-24T11:37:00.000Z</updated>
+        <summary type="html"><![CDATA[<p>Platzhalter – Originaltext entfernt (Urheberrecht).</p>]]></summary>
+        <content type="html"><![CDATA[<p>Platzhalter – Originaltext entfernt (Urheberrecht).</p>]]></content>
+        <published>2026-10-24T11:37:00.000Z</published>
+    </entry>
+<entry>
+        <title type="html"><![CDATA[Anthropic lässt KI-Agenten Verhandlungsregeln für Menschen lernen]]></title>
+        <id>urn:bid:5188343</id>
+        <link href="https://www.heise.de/news/Anthropic-laesst-KI-Agenten-Verhandlungsregeln-fuer-Menschen-lernen-11498981.html?wt_mc=rss.red.ho.themen.k%C3%BCnstliche+intelligenz.beitrag.beitrag"/>
+        <updated>2026-10-24T08:14:00.000Z</updated>
+        <summary type="html"><![CDATA[<p>Platzhalter – Originaltext entfernt (Urheberrecht).</p>]]></summary>
+        <content type="html"><![CDATA[<p>Platzhalter – Originaltext entfernt (Urheberrecht).</p>]]></content>
+        <published>2026-10-24T08:14:00.000Z</published>
+    </entry>
+<entry>
+        <title type="html"><![CDATA[Nvidia-CEO nimmt KI-Entwickler in die Pflicht: Sollen keine Schäden anrichten]]></title>
+        <id>urn:bid:5188165</id>
+        <link href="https://www.heise.de/news/Nvidia-CEO-nimmt-KI-Entwickler-in-die-Pflicht-Sollen-keine-Schaeden-anrichten-11498634.html?wt_mc=rss.red.ho.themen.k%C3%BCnstliche+intelligenz.beitrag.beitrag"/>
+        <updated>2026-10-23T15:28:00.000Z</updated>
+        <summary type="html"><![CDATA[<p>Platzhalter – Originaltext entfernt (Urheberrecht).</p>]]></summary>
+        <content type="html"><![CDATA[<p>Platzhalter – Originaltext entfernt (Urheberrecht).</p>]]></content>
+        <published>2026-10-23T15:28:00.000Z</published>
+    </entry>
+<entry>
+        <title type="html"><![CDATA[Google Maps für CarPlay: Mit Gemini sprechen bei der Fahrt]]></title>
+        <id>urn:bid:5187367</id>
+        <link href="https://www.heise.de/news/Google-Maps-fuer-CarPlay-Mit-Gemini-sprechen-bei-der-Fahrt-11497080.html?wt_mc=rss.red.ho.themen.k%C3%BCnstliche+intelligenz.beitrag.beitrag"/>
+        <updated>2026-10-23T14:18:00.000Z</updated>
+        <summary type="html"><![CDATA[<p>Platzhalter – Originaltext entfernt (Urheberrecht).</p>]]></summary>
+        <content type="html"><![CDATA[<p>Platzhalter – Originaltext entfernt (Urheberrecht).</p>]]></content>
+        <published>2026-10-23T14:18:00.000Z</published>
+    </entry>
+<entry>
+        <title type="html"><![CDATA[heise+ | Grenzen lokaler KI: Was iPhone, Galaxy, Pixel und iPad leisten]]></title>
+        <id>urn:bid:5185187</id>
+        <link href="https://www.heise.de/hintergrund/Grenzen-lokaler-KI-Was-iPhone-Galaxy-Pixel-und-iPad-leisten-11492816.html?wt_mc=rss.red.ho.themen.k%C3%BCnstliche+intelligenz.beitrag_plus.beitrag_plus"/>
+        <updated>2026-10-23T13:49:00.000Z</updated>
+        <summary type="html"><![CDATA[<p>Platzhalter – Originaltext entfernt (Urheberrecht).</p>]]></summary>
+        <content type="html"><![CDATA[<p>Platzhalter – Originaltext entfernt (Urheberrecht).</p>]]></content>
+        <published>2026-10-23T13:49:00.000Z</published>
+    </entry>
+</feed>

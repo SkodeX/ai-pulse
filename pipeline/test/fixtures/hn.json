@@ -1,0 +1,86 @@
+{
+ "hits": [
+  {
+   "objectID": "50228167",
+   "title": "Five Qwen3.8-27B models match Fable 5 Using GVS5H Harness",
+   "url": "https://github.com/slee-persis/GVS5H",
+   "author": "rzk",
+   "points": 157,
+   "num_comments": 55,
+   "created_at_i": 1792900561
+  },
+  {
+   "objectID": "50227639",
+   "title": "Meta employees say Lula’s accounts restricted in Brazil election: Report",
+   "url": "https://www.aljazeera.com/economy/2026/10/16/meta-employees-say-lulas-accounts-restricted-in-brazil-election-report",
+   "author": "nidnogg",
+   "points": 151,
+   "num_comments": 97,
+   "created_at_i": 1792894715
+  },
+  {
+   "objectID": "50227356",
+   "title": "Cerebras Deploys Trillion-Parameter AI Models",
+   "url": "https://www.cerebras.ai/blog/how-we-deploy-trillion-parameter-frontier-models-on-cerebras",
+   "author": "gmays",
+   "points": 143,
+   "num_comments": 50,
+   "created_at_i": 1792892029
+  },
+  {
+   "objectID": "50226419",
+   "title": "America has lost 200k of jobs in media, film and the arts. How much is AI?",
+   "url": "https://www.apricitas.io/p/ai-and-the-fall-of-the-creative-class",
+   "author": "gnabgib",
+   "points": 345,
+   "num_comments": 337,
+   "created_at_i": 1792883514
+  },
+  {
+   "objectID": "50225695",
+   "title": "We should be more ambitious with the software we build",
+   "url": "https://danluu.com/ambitious/",
+   "author": "ltratt",
+   "points": 390,
+   "num_comments": 337,
+   "created_at_i": 1792878451
+  },
+  {
+   "objectID": "50225674",
+   "title": "Small Programs and Languages",
+   "url": "https://ratfactor.com/cards/pl-small",
+   "author": "andsoitis",
+   "points": 102,
+   "num_comments": 7,
+   "created_at_i": 1792878263
+  },
+  {
+   "objectID": "50224916",
+   "title": "Show HN: Steal My Bitcoin",
+   "url": "https://stealmybitcoin.com/",
+   "author": "cloudlandsdev",
+   "points": 470,
+   "num_comments": 295,
+   "created_at_i": 1792873831
+  },
+  {
+   "objectID": "50224463",
+   "title": "No signs of AI payoff outside the tech sector",
+   "url": "https://www.apollo.com/wealth/insights-news/insights/daily-spark/no-signs-of-ai-payoff-outside-the-tech-sector",
+   "author": "the-mitr",
+   "points": 549,
+   "num_comments": 573,
+   "created_at_i": 1792871239
+  },
+  {
+   "objectID": "1",
+   "title": "Ask HN: Platzhalter ohne URL",
+   "author": "x",
+   "points": 150,
+   "num_comments": 3,
+   "created_at_i": 1792900561
+  }
+ ],
+ "nbHits": 9,
+ "page": 0
+}

@@ -1,0 +1,47 @@
+{
+ "generated_at": "2026-10-25T02:23:41.878Z",
+ "added": [
+  {
+   "id": 36644,
+   "name": "Vouch",
+   "slug": "vouchwealth",
+   "website": "https://vouchwealth.com/",
+   "one_liner": "The AI wealth manager for every Indian",
+   "long_description": "Platzhalter – Originaltext entfernt (Urheberrecht).",
+   "batch": "Fall 2026",
+   "tags": [
+    "Fintech",
+    "Consumer Finance"
+   ],
+   "url": "https://www.ycombinator.com/companies/vouchwealth"
+  },
+  {
+   "id": 37698,
+   "name": "Canos",
+   "slug": "canos",
+   "website": "https://www.canos.ai",
+   "one_liner": "AI-powered blood test to detect cancer in dogs (and cats soon).",
+   "long_description": "Platzhalter – Originaltext entfernt (Urheberrecht).",
+   "batch": "Fall 2026",
+   "tags": [
+    "Anti-Aging",
+    "Diagnostics",
+    "Biotechnology"
+   ],
+   "url": "https://www.ycombinator.com/companies/canos"
+  },
+  {
+   "id": 1,
+   "name": "AltFirma",
+   "slug": "altfirma",
+   "one_liner": "AI platform placeholder",
+   "long_description": "Platzhalter – Originaltext entfernt (Urheberrecht).",
+   "batch": "Summer 2018",
+   "tags": [
+    "AI"
+   ]
+  }
+ ],
+ "removed": [],
+ "updated": []
+}
