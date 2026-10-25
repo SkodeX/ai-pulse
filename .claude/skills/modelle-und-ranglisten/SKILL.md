@@ -239,3 +239,12 @@ Entschiedener Standard (Steckbrief): Abschaltdaten von Modellen stehen auch in d
 - Prüfen, dass `pipeline/terms/` dieselbe `modelEventKey()` importiert (keine Kopie) und `build-fristen.ts` die Vorrangregel aus § 10 umsetzt.
 - Detektor-IDs (`openrouter-models`, `hf-authors`, `hf-trending`, `arena-parquet`, `epoch-benchmarks`, `arc-prize`, `swebench`) ins Register und in den Katalog-Abschnitt von `quellen`.
 - Nach dem ersten `npm run smoke` auf dem Heimserver: Erreichbarkeit von openrouter.ai, epoch.ai, arcprize.org und huggingface.co festhalten; Credits im Footer sichtbar prüfen.
+
+## Ist-Stand (2026-10-25, Teil gebaut)
+
+- Gebaut: `pipeline/models/{keys,openrouter,arena,build,detect}.ts`, Alias-Tabelle `ORG_ALIASES` in `pipeline/config/watchlist.ts`, Register-Einträge `openrouter-models`, `arena-parquet` (`kind: 'detector'`, nicht in collect), `--stage watchlist`.
+- **Abweichung (Nutzerwunsch):** Bestenlisten und Watchlist werden **Mo/Mi/Fr** gebaut (nicht nur sonntags), Nachholen nach 3 Tagen; zusätzlich Arena-Configs `text_to_image` und `text_to_video` für die Bestenlisten „Design & Bild" und „Film & Video" (nicht für die Watchlist). Ausgabe `public/data/models.json` (Typ `ModelsFile`).
+- Gemessen 2026-10-25: 358 Modelle nach Reduktion; Watchlist-Top-12 = anthropic, google, meta, moonshot, xiaomi, openai, alibaba, zai, xai, deepseek, stepfun, nvidia (deckt sich mit der Probe vom 24.10.).
+- Falle: Org-Wertung nur aus den Top 20 der Arena ließ OpenAI weg (bestes Modell auf Platz > 20) → `orgBest` aus allen Zeilen.
+- Abschaltdaten nur für Orgs der letzten Watchlist (Rückfall: Basis + Ranglisten-Orgs); Poolside u. a. „beobachtet" fallen raus.
+- Offen: HF-Autoren/Trending-Detektor, Epoch, ARC, SWE-bench, „Neue #1"-Ereignisse, Aufsteiger-Regel, `newOrgs`, Opus-Empfehlungen in `models.json.recommendations`.

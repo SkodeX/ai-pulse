@@ -123,6 +123,8 @@ Dateien < 1 MB. AGB-Volltexte **nie** ins Repo → privat auf dem Server.
 | `index/JJJJ-MM.json` | `IndexEntry[]` `{ id, date, title, category, impact, personal, tags, url, src }` (`src` = Quellen-ID der Primärquelle) | ≤ 300 KB |
 | `watchlist.json` · `fristen.json` | Form: `modelle-und-ranglisten` · `gesetze-und-fristen` (`kind` `gesetz \| gericht \| agb \| modell`) | klein |
 | `meta.json` | `Meta` (unten), inkl. `firstMonth` für die Archivliste | klein |
+| `models.json` | `ModelsFile`: Bestenlisten je Einsatzzweck, neue Modelle, Abschaltungen, Tools (Mo/Mi/Fr) | ≈ 15 KB |
+| `toplists.json` | `TopListsFile`: Top 50 GitHub-Repos, Claude Skills, MCP-Server, Hugging Face (wöchentlich) | ≈ 80 KB |
 
 Archiv, Index, Briefing und Meta schreibt `pipeline/output/` (Details: `bewertung/references/ausgabe.md`).
 
@@ -201,5 +203,11 @@ Server: `systemctl list-timers ai-pulse.timer`, `journalctl -u ai-pulse -n 50`, 
 ## Phasenstand
 
 - 2026-10-24: Umfang geklärt, ~370 Quellen live recherchiert (`docs/recherche/2026-10-24/katalog/`), Roadmap und 13 Skills angelegt (je Skill Autor + adversarialer Prüfer, mehrere Konsistenzrunden). Am selben Tag Umstellung auf **Heimserver + Claude Code mit Abo** (Nutzerwunsch: weniger API-Kosten). Noch kein Code, noch kein Repo.
+
+- **2026-10-25 – Phase 1 gebaut** (Abnahme siehe unten): Register 51 Kern + 4 Fallback + 2 Detektoren (`pipeline/config/sources.ts`), Abruf-Schicht, 5 Parser, Vorfilter, Clustering, Trockenlauf mit Schatten-State, Smoke-Test. Lauf 1 (`--fresh`, 09:53 Berlin): 49/51 ok, roh 3241 → 154 → 152 Cluster, 23 s; Smoke 49/51, Fallbacks 4/4. Ist-Stand und neue Fallen: Skill `quellen` § 12. Repo `SkodeX/ai-pulse` öffentlich, MIT.
+- **2026-10-25 – Phase 2 gebaut, ohne echten Claude-Lauf**: Profil, Modelle/Grenzen, Vor-Score, CLI-Backend, Notfall-API im Fixture-Modus, Triage/Summarize/Brief, Ausgabe nach `public/data/`. Voller Lauf nur mit `AIPULSE_FULL_RUN=1`. Ohne Claude-Login fällt alles sauber auf Regel-Scores zurück (`--limit 80` geprüft). Offen: Claude Code am PC anmelden (`claude.exe auth login`, Binary der Desktop-App), dann `--limit 5`, voller Umfang, Stichprobe. Ist-Stand: Skills `bewertung`, `claude-headless`.
+- **2026-10-25 – Phase 3 Teil 1: Dashboard-App** (Vite 8.3.4, React 19.3.0, vite-plugin-pwa 2.0.0, lucide 1.55.0): Routen `#/heute`, `#/kategorie/<key|alle|neu|fuer-mich|hype>`, `#/modelle`, `#/fristen`, `#/top`, `#/mehr` (`#/briefing`, `#/gemerkt`, `#/einstellungen`); 5 Tabs unten (Heute · Kategorien · Modelle · Fristen · Mehr). Start-JS 80 KB gzip. Lokale Testdaten in `public/data/` sind per `.git/info/exclude` vom Commit ausgenommen (Regel-Daten, nie committen). Offen: Server, `deploy.yml`, `watchdog.yml`, Impressum/Datenschutz, Pille „Neue Meldungen" bei neuer `buildId`.
+- **2026-10-25 – Phase 4 (vorgezogen, ohne Claude)**: Modelle & Ranglisten (`pipeline/models/`: OpenRouter-Diff, Arena-Parquet, `models.json` mit 10 Bestenlisten, `watchlist.json` Basis + Top 12, Mo/Mi/Fr, `--stage watchlist`); Fristen (`pipeline/law/`: 21 kuratierte Stichtage, `build-fristen.ts`, `fristen.json` = `{ generatedAt, items, checks }`); Top-50-Listen (`pipeline/toplists/`, `toplists.json`, wöchentlich, `--stage toplists`). Offen: HF-Autoren, Epoch, ARC, SWE-bench, Rechtsquellen, AGB-Monitor, Security, Opus-Empfehlungen, Use-Case-Texte (Haiku).
+- Neue Datendateien (Datenvertrag ergänzt, Typen in `shared/types.ts`): `models.json` (`ModelsFile`), `toplists.json` (`TopListsFile`), `fristen.json` (`FristenFile`).
 
 (Nach jeder Phase ergänzen: was gebaut ist, Routen, Dateien, offene Punkte, neue Fallen.)

@@ -282,3 +282,9 @@ Fixtures unter `pipeline/test/fixtures/law/` (Federal-Register-JSON, OEIL-Auszug
 ## Nach dem Bauen
 
 Diesen Skill aktualisieren: echte Quellen-IDs und Dateinamen, Health aus dem ersten `npm run smoke` auf dem Heimserver (welche Rechtsquellen von der Privat-IP blockiert sind), gesammelte DIP-`beratungsstand`-Werte, Have-Your-Say-Wert für „offen“, tatsächliche Zahl der `modell`-Einträge und Größe von `fristen.json`, neue Fallen. Startliste (`references/fristen-start.md`) mit neuen `verifiedAt` pflegen, „prüfen“-Einträge abarbeiten. Neue Quellen auch im Katalog-Abschnitt von `quellen` eintragen. Phasenstand im Steckbrief nachtragen.
+
+## Ist-Stand (2026-10-25, Teil gebaut)
+
+- Gebaut: `pipeline/law/{status,fristen,build-fristen}.ts`, Typen `FristenFile`/`FristCheck` in `shared/types.ts`. `fristen.json` wird in jedem Lauf (voll und `--limit`) gebaut; `--stage watchlist` schreibt eine Vorschau.
+- AGB-Stichtage Anthropic (12.11.2026) und OpenAI (20.11.2026) stehen **übergangsweise kuratiert** in `fristen.ts`, bis der AGB-Monitor sie liefert. `PROVIDER_DEPRECATION_ORGS` ist leer, solange es keine Deprecation-Seiten im AGB-Monitor gibt (sonst fehlten OpenAI/Anthropic/Google ganz).
+- Offen: Rechtsquellen und `LawHint`, `law-watch.json`, wöchentlicher Abgleich der Fristenquellen mit `checks`, Federal-Register-/Have-Your-Say-Fristen.

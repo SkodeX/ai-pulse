@@ -199,3 +199,12 @@ Alle Keys beginnen mit `aipulse.`, denn alle Pages-Projekte teilen den Origin `s
 - `.claude/launch.json` wie oben anlegen, falls sie noch fehlt.
 - Am Handy prüfen: iPhone in Safari und als installierte App, außerdem Android Chrome. Prüfen, ob Gelesen/Gemerkt zwischen Safari und der installierten App getrennt sind; falls ja, im Install-Hinweis erwähnen.
 - Credits im Footer mit der aktiven Quellenliste abgleichen: Kommt eine Quelle mit CC-BY oder Attributionspflicht dazu, den Credit ergänzen.
+
+## Ist-Stand (2026-10-25, Phase 3 Teil 1 gebaut)
+
+- Dateien: `src/App.tsx` (Routen, Error-Boundary, lazy Views), `src/data/load.ts` (Modul-Store; ein Fehler wird nicht beim Rendern wiederholt – sonst Endlosschleife; HTML statt JSON = Datei fehlt), `src/lib/{router,storage,format,sort,visit}.ts`, `src/components/{StoryCard,BriefingPanel,Chrome,Footer,Sheet,icons}.tsx`, `src/views/{TodayView,CategoryView,ModelsView,DeadlinesView,TopListsView,MoreView}.tsx`, `src/styles/{base,components}.css`, `src/texts.ts`, `src/config.ts`.
+- **Abweichung vom Plan (Nutzerwunsch 2026-10-25):** 5 Tabs Heute · Kategorien · Modelle · Fristen · Mehr; Heute = Briefing + Top 10 (ab Score 5, ohne Gelesenes und Hype) + Fristen-Leiste + Pillen „neu seit letztem Besuch" / „Änderungen für mich" / „Hype & Zitate"; Sonderkategorien `alle`, `neu`, `fuer-mich`, `hype`; Mindest-Score Standard 5; Gelesenes standardmäßig ausgeblendet. localStorage zusätzlich `aipulse.display.lastVisit`, `aipulse.topSaved`.
+- Neue Daten: `models.json`, `toplists.json`; `fristen.json` ist ein Objekt `{ generatedAt, items, checks }` (nicht `Frist[]`).
+- Gemessen: Start-JS 80 KB gzip (Ziel ≤ 120), Precache ≈ 420 KB.
+- Fallen: `vite preview` liefert für fehlende Dateien `index.html` mit 200 → Content-Type prüfen; lokale Testdaten in `public/data/` nie committen (`.git/info/exclude`).
+- Offen: Pille „Neue Meldungen" bei neuer `buildId`, Filter-Sheet und Tag-Chips, Archiv/Radar (Phase 5), Feedback (Phase 6), Spickzettel, Impressum/Datenschutz.
