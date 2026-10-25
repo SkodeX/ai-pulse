@@ -33,6 +33,7 @@ export function MoreView({ section, briefing, latest }: { section?: string; brie
       <nav className="chips" aria-label="Bereiche">
         <a className="pill" href="#/briefing">Briefing</a>
         <a className="pill" href="#/gemerkt">Gemerkt</a>
+        <a className="pill" href="#/top">Top 50</a>
         <a className="pill" href="#/einstellungen">Einstellungen</a>
       </nav>
 
@@ -67,7 +68,7 @@ export function MoreView({ section, briefing, latest }: { section?: string; brie
       </div>
       <InstallHint />
       <h2 className="sec">Bald</h2>
-      <p className="muted">📌 Spickzettel, Top-50-Listen, Archiv und Radar folgen in späteren Phasen.</p>
+      <p className="muted">📌 Spickzettel, Archiv und Radar folgen in späteren Phasen.</p>
     </div>
   );
 }

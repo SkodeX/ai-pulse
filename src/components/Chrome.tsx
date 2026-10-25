@@ -48,7 +48,7 @@ const NAV = [
   { href: '#/kategorien', match: ['/kategorien', '/kategorie'], label: 'Kategorien', Icon: LayoutGrid },
   { href: '#/modelle', match: ['/modelle'], label: 'Modelle', Icon: Cpu },
   { href: '#/fristen', match: ['/fristen'], label: 'Fristen', Icon: CalendarClock },
-  { href: '#/mehr', match: ['/mehr', '/gemerkt', '/einstellungen'], label: 'Mehr', Icon: Menu },
+  { href: '#/mehr', match: ['/mehr', '/gemerkt', '/einstellungen', '/top'], label: 'Mehr', Icon: Menu },
 ];
 
 export function BottomNav({ path, newCount }: { path: string; newCount: number }) {

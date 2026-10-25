@@ -13,6 +13,7 @@ import { TodayView } from './views/TodayView.tsx';
 
 const ModelsView = lazy(() => import('./views/ModelsView.tsx'));
 const DeadlinesView = lazy(() => import('./views/DeadlinesView.tsx').then(m => ({ default: m.DeadlinesView })));
+const TopListsView = lazy(() => import('./views/TopListsView.tsx'));
 const MoreView = lazy(() => import('./views/MoreView.tsx').then(m => ({ default: m.MoreView })));
 
 class Boundary extends Component<{ children: ReactNode }, { error?: string }> {
@@ -52,6 +53,7 @@ export default function App() {
     content = CATEGORY_KEYS.includes(key as never) || SPECIAL[key] ? <CategoryView latest={latest.data} cat={key} /> : <TodayView latest={latest.data} briefing={briefing.data} />;
   } else if (view === 'modelle') content = <ModelsView />;
   else if (view === 'fristen') content = <DeadlinesView />;
+  else if (view === 'top') content = <TopListsView />;
   else if (view === 'mehr' || view === 'gemerkt' || view === 'einstellungen' || view === 'briefing') content = <MoreView section={view === 'mehr' ? undefined : view} briefing={briefing.data} latest={latest.data} />;
   else content = <TodayView latest={latest.data} briefing={briefing.data} focus={query.get('s')} />;
 

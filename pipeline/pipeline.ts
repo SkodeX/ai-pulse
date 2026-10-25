@@ -21,6 +21,8 @@ import { applyBoost, applySummary, attachSources, buildStory, matchBasis, mergeB
 import { collectStage } from './stages.ts'
 import { clusterItems } from './cluster/cluster.ts'
 import { loadModelsState, runModels, saveModelsState } from './models/detect.ts'
+import type { StarHistory } from './toplists/toplists.ts'
+import { buildTopLists, toplistsDue } from './toplists/toplists.ts'
 import { CACHE_DIR, ROOT, STATE_DIR, loadState, saveState } from './state.ts'
 import type { Cluster } from './types.ts'
 
@@ -137,6 +139,21 @@ export async function runPipeline(opts: PipelineOptions): Promise<void> {
   await writeJson(join(outRoot, 'fristen.json'), fristenFile, 0)
   if (models.modelsFile) await writeJson(join(outRoot, 'models.json'), models.modelsFile, 0)
   if (models.watchlist) await writeJson(join(outRoot, 'watchlist.json'), models.watchlist, 0)
+
+  // Top-50-Listen wöchentlich (nur voller Lauf; dauert wegen gestaffelter GitHub-Suche ~1 min)
+  if (opts.full) {
+    const tlState = await readJson<{ lastBuild?: string }>(join(STATE_DIR, 'leaderboards', 'toplists-build.json'), {})
+    if (toplistsDue(tlState.lastBuild, now)) {
+      const history = await readJson<StarHistory>(join(STATE_DIR, 'leaderboards', 'toplists-history.json'), { snapshots: [] })
+      const tl = await buildTopLists(history, now, process.env['AIPULSE_GITHUB_TOKEN'] || undefined)
+      for (const e of tl.errors) say(`Top-Listen: ${e}`)
+      if (tl.file.lists.length > 0) {
+        await writeJson(join(outRoot, 'toplists.json'), tl.file, 0)
+        await writeJson(join(STATE_DIR, 'leaderboards', 'toplists-history.json'), tl.history, 0)
+        await writeJson(join(STATE_DIR, 'leaderboards', 'toplists-build.json'), { lastBuild: now.toISOString() })
+      }
+    }
+  }
 
   // state/ nur im vollen Lauf, nach public/data/
   if (opts.full) {

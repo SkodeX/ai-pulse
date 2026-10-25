@@ -20,6 +20,8 @@ import { preScore } from './score/prescore.ts'
 import { buildStory, sortStories } from './score/stories.ts'
 import { collectStage } from './stages.ts'
 import { loadModelsState, runModels } from './models/detect.ts'
+import type { StarHistory } from './toplists/toplists.ts'
+import { buildTopLists } from './toplists/toplists.ts'
 import { CACHE_DIR, SHADOW_DIR, STATE_DIR, loadState, prepareShadow, saveState } from './state.ts'
 import type { Cluster } from './types.ts'
 
@@ -55,13 +57,14 @@ async function main(): Promise<void> {
   if (limit !== undefined && !(limit > 0)) exitLater('--limit braucht eine positive Zahl')
   const stage = values.stage
   if (stage && STAGE_PHASE[stage]) exitLater(`--stage ${stage} kommt in Phase ${STAGE_PHASE[stage]}`)
-  if (stage && !['collect', 'triage', 'summarize', 'brief', 'review', 'watchlist'].includes(stage)) exitLater(`unbekannte Stufe: ${stage}`)
+  if (stage && !['collect', 'triage', 'summarize', 'brief', 'review', 'watchlist', 'toplists'].includes(stage)) exitLater(`unbekannte Stufe: ${stage}`)
 
   if (stage === 'collect' || (values['dry-run'] && !stage)) return collectDryRun({ only: values.only, fresh: values.fresh })
   if (stage === 'triage') return stageTriage(limit, kind)
   if (stage === 'summarize' || stage === 'brief') return stagePreview(stage, limit, kind)
   if (stage === 'review') return stageReview()
   if (stage === 'watchlist') return stageWatchlist()
+  if (stage === 'toplists') return stageToplists()
   if (values.only) exitLater('--only gibt es nur mit --stage collect bzw. im Smoke-Test')
 
   const full = limit === undefined
@@ -141,6 +144,19 @@ async function stageWatchlist(): Promise<void> {
   console.log(`Modelle ${id}: ${r.modelsFile?.boards.length ?? 0} Bestenlisten · ${r.watchlist?.providers.length ?? 0} Anbieter · ${r.modelsFile?.fresh.length ?? 0} neue Modelle · ${r.expirations?.items.length ?? 0} Abschaltungen (Watchlist) · Ausgabe ${dir}`)
   for (const b of r.modelsFile?.boards ?? []) console.log(`  ${b.title}: ${b.rows.slice(0, 3).map(x => x.name).join(' · ')}`)
   for (const p of r.watchlist?.providers.slice(0, 15) ?? []) console.log(`  #${p.combinedRank} ${p.displayName} (Arena ${p.arenaRating ?? '–'}, AA ${p.aaIndex ?? '–'}) ${p.reason.join('+')}`)
+  for (const e of r.errors) console.log(`  Fehler: ${e}`)
+}
+
+// --stage toplists: Top-50-Listen sofort bauen → .cache/run/<id>/toplists.json (liest state/, schreibt ihn nicht)
+async function stageToplists(): Promise<void> {
+  const now = new Date()
+  const id = buildIdFor(now, runKindFor(now))
+  const history = await readJson<StarHistory>(join(STATE_DIR, 'leaderboards', 'toplists-history.json'), { snapshots: [] })
+  const r = await buildTopLists(history, now, process.env['AIPULSE_GITHUB_TOKEN'] || undefined)
+  const dir = join(CACHE_DIR, 'run', id)
+  await writeJson(join(dir, 'toplists.json'), r.file, 0)
+  console.log(`Top-Listen ${id}: ${r.file.lists.map(l => `${l.title} ${l.items.length}`).join(' · ')} · Ausgabe ${dir}`)
+  for (const l of r.file.lists) console.log(`  ${l.title}: ${l.items.slice(0, 4).map(i => `${i.name} (${i.stars})`).join(' · ')}`)
   for (const e of r.errors) console.log(`  Fehler: ${e}`)
 }
 

@@ -153,6 +153,24 @@ export interface ModelsFile {
   recommendations?: Record<string, string>   // boardId/Tool-Gruppe → „Empfehlung für dich" (Opus, später)
 }
 
+// toplists.json – „Die 50 besten …" (Wunsch 2026-10-25, Update wöchentlich)
+export interface TopListItem {
+  id: string
+  name: string
+  url: string
+  description: string        // Original-Beschreibung (meist englisch)
+  useCase?: string           // deutsche Use-Case-Beschreibung (Haiku, nur für neue Einträge)
+  stars: number              // GitHub-Sterne bzw. HF-Likes
+  growth7d: number | null    // neue Sterne in 7 Tagen (null = noch keine Vorwoche)
+  updatedAt: string
+  language?: string
+  topics: string[]
+  kind?: 'model' | 'space'
+  rising?: boolean           // Aufsteiger der Woche
+}
+export interface TopList { id: string; title: string; hint: string; unit: string; items: TopListItem[] }
+export interface TopListsFile { generatedAt: string; lists: TopList[] }
+
 export interface FristCheck {
   id: string                 // 'fristenquelle-<sourceId>' bzw. 'verfahren-<Nummer als Slug>'
   kind: 'fristenquelle' | 'verfahren'

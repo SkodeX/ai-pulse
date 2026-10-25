@@ -27,6 +27,7 @@ export default function ModelsView() {
       <p className="lead small">Stand {absTime(m.generatedAt)} · Aktualisierung Mo, Mi, Fr · Daten: Arena, Artificial Analysis über OpenRouter, Design Arena</p>
       <div className="chips" role="tablist">
         {TABS.map(([k, l]) => <button key={k} role="tab" className="pill" aria-selected={tab === k} aria-pressed={tab === k} onClick={() => setTab(k)}>{l}</button>)}
+        <a className="pill" href="#/top">Top 50 →</a>
       </div>
 
       {tab === 'best' && (
