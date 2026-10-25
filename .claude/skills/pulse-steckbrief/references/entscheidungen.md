@@ -63,6 +63,12 @@ Ausgelagert aus dem Steckbrief, damit dieser klein bleibt. Hier nachsehen, wenn 
   - **Startups hoch:** Dev-Tool-Startups, EU/DE-Startups (Mistral, Aleph Alpha, Black Forest Labs, DeepL …), China-Labs (DeepSeek, Qwen, Kimi, GLM, MiniMax).
   - **Sicherheit:** Lücken in den eigenen Tools, Prompt Injection & Agenten/MCP, Datenschutz-Vorfälle; allgemeine Lücken nur, wenn kritisch oder aktiv ausgenutzt.
   - **Zusammenfassungen:** gemischt – kurz das Wichtigste, bei Dev-Themen mit technischen Details.
+- **Spickzettel (Wunsch 2026-10-25, Phase 6 mit dem Feedback-Worker)** → `feedback-worker`, `bewertung`, `dashboard-entwickeln`:
+  - Nutzer markiert Meldungen mit 📌 (optional kurze Notiz); Markierungen gehen wie 👍/👎 in Cloudflare KV (Browser-Token).
+  - **Privat:** Spickzettel liegt nur in KV (nie im öffentlichen Repo/`public/data/`), Abruf im Dashboard nur mit dem Geräte-Token (neuer Endpunkt, z. B. `GET /cheatsheet`), Bereich unter „Mehr".
+  - **Pflege:** Opus 5.5, morgens im 07:07-Lauf, nur wenn seit dem letzten Stand neue Markierungen da sind (≤ 1 Aufruf/Tag). Inkrementell: bisheriger Zettel + neue Markierungen → aktualisierter Zettel; Veraltetes wird ersetzt (neuer Preis/neue Version mit Datum), Stichpunkte mit Datum und Quellenlink.
+  - **Gliederung:** Modelle & Preise · Mein Tool-Stack · Recht & Fristen · Sicherheit · Strategie & Markt. Kern = die Markierungen des Nutzers; zusätzlich automatisch eigene Abschnitte für Änderungen an den eigenen Tools (Preise, AGB, Features), nächste Fristen (`fristen.json`) und die Kurzfassung der Bestenliste (Mo/Mi/Fr).
+  - Dashboard: Kopier-Knopf je Abschnitt, Verlauf „seit letzter Woche geändert".
 - **Dashboard-Ausbau und Übersichtlichkeit (Wunsch 2026-10-25)** → `dashboard-entwickeln`:
   - **Regeln:** Startseite „Heute" zeigt nur Briefing + Top 10, Rest über „Alle anzeigen" · höchstens 5 Tabs unten (Heute · Kategorien · Modelle & Tools · Fristen · Mehr) · Gelesenes verschwindet von der Startseite · Mindest-Score standardmäßig 5, per Schalter alles · Karten kurz (Titel, 1 Satz, Badges an festen Plätzen), Details beim Antippen.
   - **Dashboard dazu:** Themen-Stränge (zusammenhängende Meldungen als Verlauf, über `clusterKey`/Tags), „Änderungen für mich" (Preise, AGB, Features der eigenen Tools), Fristen-Leiste auf der Startseite (nächste Stichtage aus `fristen.json`), „Neu seit letztem Besuch" (Markierung + Zähler, localStorage `aipulse.lastVisit`).
