@@ -50,7 +50,7 @@ export default function App() {
     content = null;
   } else if (view === 'kategorie') {
     const key = parts[2] ?? 'alle';
-    content = CATEGORY_KEYS.includes(key as never) || SPECIAL[key] ? <CategoryView latest={latest.data} cat={key} /> : <TodayView latest={latest.data} briefing={briefing.data} />;
+    content = CATEGORY_KEYS.includes(key as never) || SPECIAL[key] ? <CategoryView latest={latest.data} cat={key} provider={query.get('anbieter')} /> : <TodayView latest={latest.data} briefing={briefing.data} />;
   } else if (view === 'modelle') content = <ModelsView />;
   else if (view === 'fristen') content = <DeadlinesView />;
   else if (view === 'top') content = <TopListsView />;

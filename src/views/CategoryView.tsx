@@ -12,7 +12,7 @@ import { CATEGORY_SHORT, T } from '../texts.ts';
 
 export const SPECIAL: Record<string, string> = { alle: 'Alle', neu: 'Neu', 'fuer-mich': 'Für mich geändert', hype: 'Hype & Zitate' };
 
-export function CategoryView({ latest, cat }: { latest: Latest; cat: string }) {
+export function CategoryView({ latest, cat, provider }: { latest: Latest; cat: string; provider?: string | null }) {
   const filters = useStored<Filters>('filters', DEFAULT_FILTERS);
   const sort = useStored<SortKey>('sort', 'score');
   const readState = useStored<ReadState>('read', { v: 1, ids: {} });
@@ -43,12 +43,17 @@ export function CategoryView({ latest, cat }: { latest: Latest; cat: string }) {
     if (s.hype) return false;
     return cat === 'alle' || s.category === cat;
   };
-  const visible = sortStories(stories, sort).filter(s => pick(s) && s[sort] >= filters.minScore && inRange(s, filters.range, now, todayStart) && !(filters.hideRead && readState.ids[s.id] && cat !== 'neu') && matchesQuery(s, query));
+  const providerCounts = new Map<string, number>()
+  for (const s of stories) for (const p of s.providers ?? []) providerCounts.set(p, (providerCounts.get(p) ?? 0) + 1)
+  const providerOptions = [...providerCounts.entries()].sort((a, b) => b[1] - a[1])
+  const isGeneral = (s: (typeof stories)[number]) => !(s.providers?.length) && !(s.models?.length)
+  const byProvider = (s: (typeof stories)[number]) => !provider || (provider === 'allgemein' ? isGeneral(s) : (s.providers ?? []).includes(provider))
+  const visible = sortStories(stories, sort).filter(s => pick(s) && byProvider(s) && s[sort] >= filters.minScore && inRange(s, filters.range, now, todayStart) && !(filters.hideRead && readState.ids[s.id] && cat !== 'neu') && matchesQuery(s, query));
   const setF = (f: Partial<Filters>) => write('filters', { ...filters, ...f });
 
   return (
     <div className="view">
-      <h1>{SPECIAL[cat] ?? CATEGORY_SHORT[cat]}</h1>
+      <h1>{SPECIAL[cat] ?? CATEGORY_SHORT[cat]}{provider ? ` · ${provider === 'allgemein' ? 'Allgemein' : provider}` : ''}</h1>
       <div className="chips" role="list">
         {[...Object.keys(SPECIAL), ...CATEGORY_KEYS.filter(k => counts[k])].map(k => (
           <a role="listitem" key={k} className="pill" aria-current={k === cat ? 'page' : undefined} href={`#/kategorie/${k}`}>
@@ -63,6 +68,11 @@ export function CategoryView({ latest, cat }: { latest: Latest; cat: string }) {
         </select>
         <select id="min" value={filters.minScore} onChange={e => setF({ minScore: Number(e.target.value) })} aria-label="Mindest-Score">
           <option value={0}>alle Scores</option><option value={5}>ab 5</option><option value={6}>ab 6</option><option value={7}>ab 7</option><option value={8}>ab 8</option>
+        </select>
+        <select id="provider" value={provider ?? ''} onChange={e => { location.hash = `#/kategorie/${cat}${e.target.value ? `?anbieter=${encodeURIComponent(e.target.value)}` : ''}` }} aria-label="Anbieter">
+          <option value="">alle Anbieter</option>
+          <option value="allgemein">Allgemein</option>
+          {providerOptions.map(([p, n]) => <option key={p} value={p}>{p} ({n})</option>)}
         </select>
         <select id="range" value={filters.range} onChange={e => setF({ range: e.target.value as Filters['range'] })} aria-label="Zeitraum">
           <option value="today">Heute</option><option value="24h">24 h</option><option value="72h">72 h</option>

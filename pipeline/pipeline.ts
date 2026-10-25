@@ -17,7 +17,7 @@ import { HOUR, readJson, writeJson } from './lib/util.ts'
 import { buildHealth, sourceNotices } from './output/meta.ts'
 import { loadBasis, writeOutput } from './output/write.ts'
 import { preScore } from './score/prescore.ts'
-import { applyBoost, applySummary, attachSources, buildStory, matchBasis, mergeByKey, sortStories } from './score/stories.ts'
+import { applyBoost, applySummary, attachSources, buildStory, matchBasis, mergeByKey, sortStories, withEntities } from './score/stories.ts'
 import { collectStage } from './stages.ts'
 import { clusterItems } from './cluster/cluster.ts'
 import { loadModelsState, runModels, saveModelsState } from './models/detect.ts'
@@ -110,8 +110,9 @@ export async function runPipeline(opts: PipelineOptions): Promise<void> {
     const sum = summaries.get(s.id)
     const withSum = sum ? applySummary(s, sum) : s
     const c = clusterOf.get(s.id)
-    return c ? applyBoost(withSum, c) : withSum
+    return withEntities(c ? applyBoost(withSum, c) : withSum, c?.primary.teaser)
   })
+  for (const [id, s] of changed) changed.set(id, s.providers ? s : withEntities(s))
 
   // 3: Briefing
   const allStories = sortStories([...built, ...changed.values()])

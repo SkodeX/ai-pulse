@@ -12,6 +12,8 @@ export const TriageOut = z.object({
     relevant: z.boolean(),
     category: z.enum(CATEGORY_KEYS),
     tags: z.array(z.string()),
+    providers: z.array(z.string()),
+    models: z.array(z.string()),
     clusterKey: z.string(),
     titleDe: z.string(),
     impact: z.number().int(),

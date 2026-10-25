@@ -9,6 +9,7 @@ import type { TriageItem } from '../llm/triage.ts'
 import type { SummaryItem } from '../llm/summarize.ts'
 import { HOUR, sha1 } from '../lib/util.ts'
 import type { Cluster } from '../types.ts'
+import { detectEntities, sourceProvider } from './entities.ts'
 import { boostCondition, clampScore, ruleScores, storyScore } from './prescore.ts'
 
 export function storyIdFor(clusterKey: string): string {
@@ -73,6 +74,8 @@ export function buildStory(c: Cluster, pre: number, triage: TriageItem | undefin
     category: isCategory(triage.category) ? triage.category : 'neuigkeiten',
     tags: [...new Set(triage.tags.map(normalizeTag).filter(t => t && !/^(ki|ai)$/i.test(t)))].slice(0, 6),
     impact, personal, score: storyScore(impact, personal), hype: triage.hype,
+    providers: triage.providers.map(p => p.trim()).filter(Boolean).slice(0, 4),
+    models: triage.models.map(m => m.trim()).filter(Boolean).slice(0, 4),
     ratedBy: triage.model || 'claude-haiku-5-5',
     ...base,
   }
@@ -119,6 +122,25 @@ export function applyBoost(s: Story, c: Pick<Cluster, 'signals'>): Story {
   if (s.ratedBy === 'regel' || !boostCondition(c)) return s
   const impact = Math.min(10, s.impact + 1)
   return { ...s, impact, score: storyScore(impact, s.personal) }
+}
+
+// Anbieter-/Modell-Tags aus Titel, Originaltitel, Teaser, Zusammenfassung und Tags (auch für Regel-Stories)
+// Regel-Erkennung ∪ Claude-Angaben (Claude zuerst, ohne Dubletten); kein Anbieter → offizielle Primärquelle
+export function withEntities(s: Story, teaser = ''): Story {
+  const rule = detectEntities([s.originalTitle, s.title, teaser, s.summary ?? ''].join(' \n '), s.tags)
+  const merge = (a: string[], b: string[]) => {
+    const out: string[] = []
+    for (const x of [...a, ...b]) if (!out.some(y => y.toLowerCase().replace(/[\s-]+/g, '') === x.toLowerCase().replace(/[\s-]+/g, ''))) out.push(x)
+    return out.slice(0, 4)
+  }
+  // Claude-Namen auf die Schreibweise der Regel-Erkennung bringen („openai" → „OpenAI")
+  const claudeProviders = (s.providers ?? []).map(p => detectEntities(p).providers[0] ?? p)
+  let providers = merge(claudeProviders, rule.providers)
+  if (providers.length === 0) {
+    const fallback = sourceProvider(s.sources[0]?.id ?? '')
+    if (fallback) providers = [fallback]
+  }
+  return { ...s, providers, models: merge(s.models ?? [], rule.models) }
 }
 
 export function sortStories(list: Story[]): Story[] {

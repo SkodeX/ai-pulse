@@ -59,7 +59,7 @@ describe('Schemas und Prompts', () => {
     for (const s of [TriageOut, SummaryOut, BriefingOut]) assert.match(jsonSchema(s), /draft-07/)
   })
   test('Normalisierung: Enum-Schreibweise, Scores clampen', () => {
-    const r = parseOutput(TriageOut, { items: [{ ref: 'k01', relevant: true, category: 'Modelle', tags: [], clusterKey: 'a-b-c', titleDe: 'x', impact: 14, personal: 0, hype: false, incidentKind: 'None', law: null }] })
+    const r = parseOutput(TriageOut, { items: [{ ref: 'k01', relevant: true, category: 'Modelle', tags: [], providers: [], models: [], clusterKey: 'a-b-c', titleDe: 'x', impact: 14, personal: 0, hype: false, incidentKind: 'None', law: null }] })
     assert.ok(r.ok)
     if (r.ok) { assert.equal(r.value.items[0]!.category, 'modelle'); assert.equal(r.value.items[0]!.impact, 10); assert.equal(r.value.items[0]!.personal, 1) }
   })
@@ -147,7 +147,7 @@ describe('Story-Bau', () => {
 
   test('Triage übernehmen: Hype deckelt impact, id aus clusterKey, Tags normalisiert', () => {
     const c = cluster()
-    const s = buildStory(c, 8, { ref: 'k01', relevant: true, category: 'modelle', tags: ['openai', 'GPT-6', 'AI'], clusterKey: 'openai-gpt-6-release', titleDe: 'OpenAI stellt GPT-6 vor', impact: 9, personal: 8, hype: true, incidentKind: 'none', law: null, model: 'claude-haiku-5-5' }, NOW)
+    const s = buildStory(c, 8, { ref: 'k01', relevant: true, category: 'modelle', tags: ['openai', 'GPT-6', 'AI'], providers: ['OpenAI'], models: ['GPT-6'], clusterKey: 'openai-gpt-6-release', titleDe: 'OpenAI stellt GPT-6 vor', impact: 9, personal: 8, hype: true, incidentKind: 'none', law: null, model: 'claude-haiku-5-5' }, NOW)
     assert.equal(s.id, storyIdFor('openai-gpt-6-release'))
     assert.equal(s.impact, 5)
     assert.deepEqual(s.tags, ['OpenAI', 'GPT-6'])

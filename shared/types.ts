@@ -22,6 +22,8 @@ export interface Story {
   sources: StorySource[]     // Primärquelle zuerst
   category: Category
   tags: string[]
+  providers?: string[]       // betroffene Anbieter (z. B. „OpenAI"); fehlt/leer = allgemein
+  models?: string[]          // betroffene Modelle/Produkte (z. B. „GPT-6 Astra", „Claude Code")
   impact: number             // 1–10
   personal: number           // 1–10
   score: number              // (impact + personal) / 2, eine Nachkommastelle

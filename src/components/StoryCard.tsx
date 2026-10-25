@@ -43,6 +43,14 @@ export function StoryCard({ story: s, sort = 'score', isNew = false, highlight =
           <span className={sort === 'personal' ? 'on' : ''} aria-label={`Für mich ${s.personal} von 10`}>F {s.personal}</span>
         </div>
       </div>
+      <div className="entities" aria-label="Betrifft">
+        {(s.providers?.length ?? 0) === 0 && (s.models?.length ?? 0) === 0
+          ? <span className="ent general">Allgemein</span>
+          : <>
+              {s.providers?.map(p => <a key={p} className="ent prov" href={`#/kategorie/alle?anbieter=${encodeURIComponent(p)}`}>{p}</a>)}
+              {s.models?.map(m => <span key={m} className="ent model">{m}</span>)}
+            </>}
+      </div>
       {s.summary && <p className="summary">{s.summary}</p>}
       {(s.whyImportant || s.forYou) && (
         <details className="more">

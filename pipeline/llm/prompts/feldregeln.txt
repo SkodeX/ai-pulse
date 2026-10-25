@@ -1,6 +1,8 @@
 Feldregeln:
 - titleDe: deutscher Titel, sachlich, höchstens 90 Zeichen, Akteur vorn, Aktiv, Produkt- und Modellnamen im Original, keine Fragen, kein Clickbait. Ein passender deutscher Originaltitel darf bleiben.
 - tags: Firmen, Modelle, Produkte, Gesetze in Originalschreibweise, höchstens 6, keine Allgemeinwörter wie „KI" oder „AI".
+- providers: die Firmen bzw. Anbieter, um die es in der Meldung geht (z. B. „OpenAI", „Anthropic", „Mistral AI", „Block"), höchstens 4, Hauptbetroffene zuerst; leere Liste, wenn die Meldung allgemein ist (Branche, Studie, Politik ohne konkrete Firma).
+- models: konkret genannte Modelle oder KI-Produkte mit Version, wie im Text geschrieben (z. B. „GPT-6 Astra", „Claude Code", „Gemini 4 Argon", „Qwen3.8-27B"), höchstens 4; leere Liste, wenn keins genannt ist.
 - clusterKey: englischer ASCII-Slug aus 3 bis 8 Teilen mit Bindestrich: Akteur – Objekt – Ereignis (release, price-change, funding, acquisition, ruling, vulnerability, deprecation, policy-update …). Versionen mit Bindestrich (gpt-5-6), keine Datumsangaben. Dieselbe Story aus deutschen und englischen Quellen bekommt denselben Schlüssel. Passt ein Schlüssel aus <kontext>, übernimm ihn unverändert – auch mit Datum oder Präfix.
 - relevant: false bei fehlendem KI-Bezug, Werbung oder Sponsored, Stellenanzeigen, reiner Wiederholung ohne neue Fakten.
 - incidentKind: nur bei sicherheit – breach (Datenabfluss oder Kompromittierung), supply-chain (kompromittiertes Paket), exploited (aktiv ausgenutzt), research (Forschung oder PoC ohne Ausnutzung); sonst immer none.

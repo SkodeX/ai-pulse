@@ -12,6 +12,7 @@ export const StorySchema = z.object({
   id: z.string(), clusterKey: z.string(), title: z.string(), originalTitle: z.string(), url: z.string(),
   sources: z.array(z.object({ id: z.string(), name: z.string(), url: z.string(), lang: z.enum(['de', 'en']) })).min(1),
   category: z.enum(CATEGORY_KEYS), tags: z.array(z.string()),
+  providers: z.array(z.string()).optional(), models: z.array(z.string()).optional(),
   impact: score, personal: score, score: z.number().min(1).max(10),
   hype: z.boolean(), paywall: z.boolean(),
   summary: z.string().optional(), whyImportant: z.string().optional(), forYou: z.string().optional(),
