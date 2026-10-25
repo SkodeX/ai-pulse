@@ -125,3 +125,9 @@ interface UsageEntry {
 ## Nach dem Bauen
 
 Gemessene Fehlerformen (Exit-Codes, JSON-Felder bei Limit/Auth), Token pro Aufruf und Aufrufe pro Lauf hier nachtragen; Phasenstand im Steckbrief ergänzen.
+
+## Befund lokal (2026-10-25)
+
+- Kein `claude` im PATH; die Desktop-App bringt eigene Binärdateien mit (`%LOCALAPPDATA%\Claude-Data\<…>\claude-code\<version>\<hash>\claude.exe`, Version 2.1.308). Für Skripte `AIPULSE_CLAUDE_BIN` darauf setzen.
+- Dieses Binary ist **standalone nicht angemeldet** (`claude auth status` → `loggedIn: false`, `authMethod: none`): Die Desktop-App reicht ihren Login nur an eigene Sitzungen durch (`ANTHROPIC_BASE_URL`, Host-Auth), und `cleanEnv()` lässt das ohnehin nicht durch. Für lokale Testläufe einmal `claude.exe auth login` (Nutzer, Browser).
+- `--help` 2.1.308 bestätigt `--safe-mode`, `--bare`, `--tools`, `--json-schema`, `--effort`, `--no-session-persistence`, `--output-format`; `--system-prompt-file` erscheint nur im Hilfetext von `--safe-mode`/`--bare` („--system-prompt[-file]"), existiert also.

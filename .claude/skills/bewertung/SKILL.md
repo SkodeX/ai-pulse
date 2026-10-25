@@ -278,3 +278,18 @@ Schreibt am Laufende alle Dateien des Datenvertrags außer `watchlist.json` (`mo
 ## Nach dem Bauen
 
 Diesen Skill aktualisieren (nach Phase 1 zuerst `references/clustering.md`: gemessene Cluster je Lauf, Fehl-Merges, Laufzeit): echte Dateinamen, gemessene Token je Stufe und CLI-Aufrufe je Lauf, gemessene Laufzeiten (Timeouts anpassen), Feldname der Modell-Aufschlüsselung, Ø-Kosten eines Notfall-Laufs, Story-Mengen und Dateigrößen in `public/data/`, nach der Stichprobe angepasste Gewichte und Schwellen. Phasenstand im Steckbrief nachtragen.
+
+## Ist-Stand Phase 2 (2026-10-25, Code gebaut, noch ohne echten Claude-Lauf)
+
+**Dateien:** `pipeline/config/{profile,models,watchlist}.ts` · `pipeline/score/prescore.ts` (0b, Regel-Scores, Boost-Bedingung), `score/stories.ts` (Abgleich-Basis per URL + Titel-Jaccard, `buildStory`, 1b `mergeByKey`, `applySummary` ±2, `applyBoost`) · `pipeline/llm/{schemas,prompts,budget,triage,summarize,brief,article}.ts`, `llm/backends/{cli,api,types}.ts`, Prompt-Bausteine `llm/prompts/*.txt` · `pipeline/output/{schemas,write,meta}.ts` · `pipeline/stages.ts` (Sammelstufe), `pipeline/pipeline.ts` (Ablauf), `pipeline/run.ts` (Flags) · Tests `pipeline/test/llm.test.ts`, Fixtures `pipeline/test/fixtures/llm/api-{triage,summarize,brief}.json`.
+
+**Abweichungen/Ergänzungen:**
+- Voller Lauf nur mit `AIPULSE_FULL_RUN=1` (in die systemd-Unit, Skill `job-betrieb`) – Schutz gegen versehentliches Schreiben von `public/data/`/`state/` am PC.
+- `--limit n` nimmt die n Cluster mit dem höchsten `preScore` und schreibt nur diese als Stories nach `.cache/run/<buildId>/`.
+- `--stage summarize|brief` lesen `public/data/latest.json`, ersatzweise die jüngste `.cache/run/*/latest.json` (lokal gibt es kein `public/data/`).
+- Notfall-API: nur Fixture-Modus; `callApiLive` meldet „noch nicht angebunden" (Key kommt in Phase 3, vorher Skill `claude-api` laden und `@anthropic-ai/sdk` installieren).
+- Stufe 2 fasst nur von Claude bewertete Stories zusammen (Regel-Stories bleiben ohne `summary`).
+- Profil enthält die geklärten Interessen/Desinteressen (Steckbrief → `entscheidungen.md`); Hype-Definition um „Zitate von Chefs/Prominenten ohne neue Fakten" ergänzt.
+- `candidates.json` trägt ab jetzt `preScore` und ist danach sortiert.
+
+**Offen:** echte Läufe (Token je Stufe, Laufzeit, Feldname `modelUsage` bestätigen, Fehlerform bei ungültigem Token als Fixture), Stichprobe mit dem Nutzer (`--stage review`), Timeouts nach Messung anpassen.
