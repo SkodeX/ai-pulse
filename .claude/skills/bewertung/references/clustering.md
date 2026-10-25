@@ -96,4 +96,4 @@ export interface Cluster {
 - `seen.json` aus einem `--limit`-Lauf → Rest für immer verschluckt; nur der volle Lauf schreibt `state/`, Trockenläufe nur den Schatten-State.
 - Stoppwörter nicht genauso normalisiert wie die Titel → „fur", „uber" bleiben als Token und blähen Jaccard-Treffer auf.
 - Union-Find verkettet: A ≈ B und B ≈ C landen zusammen, auch wenn A und C wenig teilen → Fehl-Merges im `report.md` prüfen, Schwelle trotzdem nicht senken.
-- Lauf 2 direkt nach Lauf 1: viele Feeds antworten 304, kaum neue Items → für die Abnahme ≥ 6 h warten.
+- Lauf 2 direkt nach Lauf 1: viele Feeds antworten 304, kaum neue Items → für die Abnahme ≥ 6 h warten. Gemessen 2026-10-25: Lauf 1 (Basis) 152 Cluster, Lauf 2 nach 6 h am Sonntagnachmittag nur 9 → Abnahmelauf auf einen Werktagmorgen legen (Vorabend + Nacht als Fenster), nicht aufs Wochenende. Gemessen 2026-10-25: Lauf 1 (Basis) 152 Cluster, Lauf 2 nach 6 h am Sonntagnachmittag nur 9 → Abnahmelauf nicht auf Wochenende/Feiertag legen, sondern auf einen Werktagmorgen (Nacht + Vorabend als Fenster).
