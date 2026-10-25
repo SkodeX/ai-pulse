@@ -8,23 +8,37 @@
     "node": ">=24.12"
   },
   "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit -p tsconfig.app.json && vite build",
+    "preview": "vite preview",
+    "icons": "pwa-assets-generator",
     "collect": "node pipeline/run.ts --stage collect",
     "smoke": "node pipeline/smoke.ts",
     "pipeline": "node pipeline/run.ts",
-    "test": "node --test \"pipeline/test/**/*.test.ts\"",
-    "typecheck": "tsc --noEmit -p tsconfig.pipeline.json"
+    "test": "node --test \"pipeline/test/**/*.test.ts\" \"src/**/*.test.ts\"",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.test.json && tsc --noEmit -p tsconfig.pipeline.json"
   },
   "dependencies": {
     "@extractus/feed-extractor": "^8",
+    "@fontsource-variable/inter": "^5.3.0",
     "@mozilla/readability": "^0.6",
     "linkedom": "^0.18",
+    "lucide-react": "^1.55.0",
     "normalize-url": "^9",
     "p-limit": "^7",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
     "tldts": "^7",
     "zod": "^4"
   },
   "devDependencies": {
     "@types/node": "^24",
-    "typescript": "^7"
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vite-pwa/assets-generator": "^2.0.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "typescript": "^7",
+    "vite": "^8.3.4",
+    "vite-plugin-pwa": "^2.0.0"
   }
 }

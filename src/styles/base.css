@@ -1,0 +1,66 @@
+/* Farben, Schrift, Grundlayout. Mobile first, Hell/Dunkel über prefers-color-scheme, Safe Areas aus Space. */
+:root {
+  --bg: #f3f5fa;
+  --surface: #ffffff;
+  --ink: #111727;
+  --muted: #586276;
+  --line: #dde2ed;
+  --signal: #2f54eb;
+  --signal-soft: #e8edff;
+  --high: #0e7d55;
+  --high-soft: #e3f4ec;
+  --mid: #9a5d08;
+  --mid-soft: #fbf0dc;
+  --hype: #a3236f;
+  --hype-soft: #fbe6f1;
+  --font-body: 'Inter Variable', 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-num: ui-monospace, 'SFMono-Regular', 'Cascadia Mono', Consolas, monospace;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --nav-h: 62px;
+  --radius: 14px;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0d1220;
+    --surface: #161c2a;
+    --ink: #e7eaf3;
+    --muted: #9aa3b8;
+    --line: #283145;
+    --signal: #8ea2ff;
+    --signal-soft: #1e2850;
+    --high: #52d39c;
+    --high-soft: #13322a;
+    --mid: #f0b456;
+    --mid-soft: #362a13;
+    --hype: #f07ab8;
+    --hype-soft: #3a1830;
+    color-scheme: dark;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; background: var(--bg); }
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15.5px/1.5 var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: hidden;
+}
+h1, h2, h3 { margin: 0; line-height: 1.25; letter-spacing: -0.015em; text-wrap: balance; }
+a { color: var(--signal); }
+button, input, select { font: inherit; color: inherit; }
+input, select { font-size: 16px; } /* iOS zoomt sonst beim Fokus */
+:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+.wrap { max-width: 760px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.muted { color: var(--muted); }
+.small { font-size: 12.5px; }
+.skip { position: absolute; left: -999px; top: 0; }
+.skip:focus { left: 12px; top: 12px; z-index: 50; background: var(--surface); padding: 8px 12px; border-radius: 8px; }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; scroll-behavior: auto !important; } }
