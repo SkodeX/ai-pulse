@@ -2,7 +2,7 @@
 // Jede Datei wird einmal geladen und von allen Ansichten geteilt. Daten nie ins Bundle.
 import { useSyncExternalStore } from 'react';
 import { CATEGORY_KEYS } from '../../shared/categories.ts';
-import type { Briefing, Frist, Latest, Meta, Story } from '../../shared/types.ts';
+import type { Briefing, FristenFile, Latest, Meta, Story } from '../../shared/types.ts';
 
 export type Status = 'loading' | 'ok' | 'missing' | 'error';
 export interface Entry<T> { status: Status; data?: T; loadedAt?: number }
@@ -81,7 +81,7 @@ export function parseLatest(raw: unknown): Latest {
 export const useLatest = () => useData<Latest>('latest.json', parseLatest);
 export const useBriefing = () => useData<Briefing>('briefing/latest.json');
 export const useMeta = () => useData<Meta>('meta.json');
-export const useFristen = () => useData<Frist[]>('fristen.json');
+export const useFristen = () => useData<FristenFile>('fristen.json');
 
 export function reloadCore(): void {
   for (const p of ['latest.json', 'briefing/latest.json', 'meta.json']) load(p, p === 'latest.json' ? parseLatest : undefined, true);

@@ -3,7 +3,7 @@ import type { Briefing, Frist, Latest } from '../../shared/types.ts';
 import { BriefingPanel } from '../components/BriefingPanel.tsx';
 import { StoryCard } from '../components/StoryCard.tsx';
 import { useFristen } from '../data/load.ts';
-import { daysUntil, dateDe } from '../lib/format.ts';
+import { daysUntil, dateDe, inDays } from '../lib/format.ts';
 import { isForMe, sortStories } from '../lib/sort.ts';
 import { DEFAULT_FILTERS, useStored } from '../lib/storage.ts';
 import type { Filters, ReadState } from '../lib/storage.ts';
@@ -19,7 +19,7 @@ export function FristStrip({ fristen }: { fristen: Frist[] }) {
         const d = daysUntil(f.date!);
         return (
           <a role="listitem" key={f.id} className={`due${d <= 14 ? ' soon' : ''}`} href="#/fristen">
-            <span className="due-date">{dateDe(f.date!)} · {d === 0 ? 'heute' : `in ${d} T.`}</span>
+            <span className="due-date">{dateDe(f.date!)} · {inDays(d, true)}</span>
             <span>{f.title}</span>
             <span className="muted small">{FRIST_KIND[f.kind] ?? f.kind}{f.provider ? ` · ${f.provider}` : f.jurisdiction ? ` · ${f.jurisdiction}` : ''}</span>
           </a>
@@ -53,10 +53,10 @@ export function TodayView({ latest, briefing, focus }: { latest: Latest; briefin
         <a className="pill" href="#/kategorie/fuer-mich"><b>{mineN}</b> Änderungen für mich</a>
         <a className="pill" href="#/kategorie/hype"><b>{hypeN}</b> Hype &amp; Zitate</a>
       </div>
-      {fristen.data && fristen.data.length > 0 && (
+      {fristen.data && fristen.data.items.length > 0 && (
         <>
           <h2 className="sec">Nächste Fristen</h2>
-          <FristStrip fristen={fristen.data} />
+          <FristStrip fristen={fristen.data.items} />
         </>
       )}
       <h2 className="sec">Top 10 <small>ab Score {filters.minScore}, ohne Gelesenes und Hype</small></h2>

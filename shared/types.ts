@@ -153,6 +153,16 @@ export interface ModelsFile {
   recommendations?: Record<string, string>   // boardId/Tool-Gruppe → „Empfehlung für dich" (Opus, später)
 }
 
+export interface FristCheck {
+  id: string                 // 'fristenquelle-<sourceId>' bzw. 'verfahren-<Nummer als Slug>'
+  kind: 'fristenquelle' | 'verfahren'
+  sourceId?: string
+  reason: string
+  since: string              // 'YYYY-MM-DD'
+}
+
+export interface FristenFile { generatedAt: string; items: Frist[]; checks: FristCheck[] }
+
 // watchlist.json (Skill modelle-und-ranglisten)
 export interface WatchlistEntry {
   org: string

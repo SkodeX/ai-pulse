@@ -3,7 +3,9 @@
 import { readdir } from 'node:fs/promises'
 import { join } from 'node:path'
 import { parseArgs } from 'node:util'
-import type { Latest, RunKind } from '../shared/types.ts'
+import type { FristenFile, Latest, RunKind } from '../shared/types.ts'
+import { buildFristen } from './law/build-fristen.ts'
+import { CURATED_FRISTEN } from './law/fristen.ts'
 import { markShadowSeen } from './cluster/cluster.ts'
 import { headline, rawItemsJson, reportMd, summarize } from './collect/report.ts'
 import { LIMITS } from './config/models.ts'
@@ -133,6 +135,9 @@ async function stageWatchlist(): Promise<void> {
   if (r.modelsFile) await writeJson(join(dir, 'models.json'), r.modelsFile, 0)
   if (r.watchlist) await writeJson(join(dir, 'watchlist.json'), r.watchlist, 0)
   if (r.expirations) await writeJson(join(dir, 'expirations-openrouter.json'), r.expirations)
+  const fristen = buildFristen(await readJson<FristenFile | undefined>(join(PUBLIC_DATA, 'fristen.json'), undefined), CURATED_FRISTEN, { models: r.expirations ? [r.expirations] : [] }, now)
+  await writeJson(join(dir, 'fristen.json'), fristen, 0)
+  console.log(`Fristen: ${fristen.items.length} Einträge (${fristen.items.filter(f => f.origin === 'automatisch').length} automatisch)`)
   console.log(`Modelle ${id}: ${r.modelsFile?.boards.length ?? 0} Bestenlisten · ${r.watchlist?.providers.length ?? 0} Anbieter · ${r.modelsFile?.fresh.length ?? 0} neue Modelle · ${r.expirations?.items.length ?? 0} Abschaltungen (Watchlist) · Ausgabe ${dir}`)
   for (const b of r.modelsFile?.boards ?? []) console.log(`  ${b.title}: ${b.rows.slice(0, 3).map(x => x.name).join(' · ')}`)
   for (const p of r.watchlist?.providers.slice(0, 15) ?? []) console.log(`  #${p.combinedRank} ${p.displayName} (Arena ${p.arenaRating ?? '–'}, AA ${p.aaIndex ?? '–'}) ${p.reason.join('+')}`)

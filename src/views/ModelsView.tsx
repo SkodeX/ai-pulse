@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { ModelsFile, Watchlist } from '../../shared/types.ts';
 import { useData } from '../data/load.ts';
-import { absTime, dateDe, daysUntil, usd } from '../lib/format.ts';
+import { absTime, dateDe, daysUntil, inDays, usd } from '../lib/format.ts';
 
 // Modelle & Tools: data/models.json (Bestenlisten, neu, Abschaltungen, Tools) + data/watchlist.json (Anbieter). Aktualisierung Mo/Mi/Fr.
 const TABS = [['best', 'Bestenlisten'], ['stack', 'Mein Stack'], ['prov', 'Anbieter'], ['new', 'Neu & Abschaltungen'], ['tools', 'Tools']] as const;
@@ -9,7 +9,6 @@ type Tab = typeof TABS[number][0];
 
 // Eigene Werkzeuge (Profil) → passende Bestenliste
 const STACK: [string, string][] = [['Claude / Claude Code', 'coding'], ['ChatGPT / Codex', 'text'], ['Gemini', 'text'], ['GitHub Copilot', 'coding'], ['Cursor', 'webdev'], ['Ollama (lokal)', 'value']];
-const inDays = (d: number) => (d <= 0 ? 'heute' : d === 1 ? 'morgen' : `in ${d} Tagen`);
 const TREND: Record<string, string> = { up: '↑', down: '↓', same: '→', new: 'neu' };
 
 export default function ModelsView() {

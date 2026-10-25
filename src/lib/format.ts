@@ -38,3 +38,10 @@ export function hostOf(url: string): string {
 export function safeHref(url: string): string | undefined {
   return /^https?:\/\//i.test(url) ? url : undefined;
 }
+
+export function inDays(d: number, short = false): string {
+  if (d === 0) return 'heute';
+  if (d === 1) return 'morgen';
+  if (d < 0) return 'vorbei';
+  return short ? `in ${d} T.` : `in ${d} Tagen`;
+}

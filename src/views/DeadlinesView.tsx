@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useFristen } from '../data/load.ts';
-import { dateDe, daysUntil, safeHref } from '../lib/format.ts';
+import { dateDe, daysUntil, inDays, safeHref } from '../lib/format.ts';
 import { FRIST_KIND, JURISDICTION, LAW_LABEL } from '../texts.ts';
 
 const KINDS = [['alle', 'Alle'], ['gesetz', 'Gesetze'], ['gericht', 'Gerichte'], ['agb', 'AGB'], ['modell', 'Abschaltungen']] as const;
@@ -10,7 +10,7 @@ export function DeadlinesView() {
   const [kind, setKind] = useState<string>('alle');
   const [past, setPast] = useState(false);
   if (fristen.status === 'loading') return <div className="view"><p className="muted">Lädt …</p></div>;
-  const all = fristen.data ?? [];
+  const all = fristen.data?.items ?? [];
   const list = all
     .filter(f => kind === 'alle' || f.kind === kind)
     .filter(f => past || !f.date || daysUntil(f.date) >= 0)
@@ -32,7 +32,7 @@ export function DeadlinesView() {
               const status = f.kind === 'agb' ? (f.status === 'in_kraft' ? 'gilt' : 'angekündigt') : f.kind === 'modell' ? (f.status === 'in_kraft' ? 'abgeschaltet' : 'angekündigt') : LAW_LABEL[f.status] ?? f.status;
               return (
                 <li key={f.id} className={d !== null && d >= 0 && d <= 14 ? 'soon' : ''}>
-                  <span className="t-date">{f.date ? `${dateDe(f.date)} · ${d! < 0 ? 'vorbei' : d === 0 ? 'heute' : `in ${d} Tagen`}` : 'Datum prüfen'}</span>
+                  <span className="t-date">{f.date ? `${dateDe(f.date)} · ${inDays(d!)}` : 'Datum prüfen'}</span>
                   <span className="t-title">{f.title}</span>
                   <span className="muted small">
                     {FRIST_KIND[f.kind] ?? f.kind} · {status}

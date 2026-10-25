@@ -2,7 +2,9 @@
 // Voller Lauf (nur Server) schreibt public/data/ + state/; --limit schreibt nach .cache/run/<runId>/.
 
 import { join } from 'node:path'
-import type { Briefing, BriefingIndexEntry, Frist, Meta, RunKind, Story } from '../shared/types.ts'
+import type { Briefing, BriefingIndexEntry, FristenFile, Meta, RunKind, Story } from '../shared/types.ts'
+import { buildFristen } from './law/build-fristen.ts'
+import { CURATED_FRISTEN } from './law/fristen.ts'
 import { SOURCES } from './config/sources.ts'
 import { LIMITS } from './config/models.ts'
 import { fetchArticles } from './llm/article.ts'
@@ -117,7 +119,7 @@ export async function runPipeline(opts: PipelineOptions): Promise<void> {
   const todayMorning = lastMorning && new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Berlin' }).format(new Date(lastMorning)) === new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Berlin' }).format(now) ? lastMorning : undefined
   const since = kind === 'morning' ? (lastMorning ?? new Date(now.getTime() - 24 * HOUR).toISOString()) : todayMorning
   const pool = briefingPool(latestPool.filter(s => !since || s.firstSeen > since || kind === 'morning'), kind, since)
-  const fristen = await readJson<Frist[]>(join(PUBLIC_DATA, 'fristen.json'), [])
+  const fristen = (await readJson<FristenFile | undefined>(join(PUBLIC_DATA, 'fristen.json'), undefined))?.items ?? CURATED_FRISTEN
   const briefing: Briefing = await runBrief(runner, pool, kind, now, fristen, CACHE_DIR)
 
   // 4: Ausgabe
@@ -129,6 +131,10 @@ export async function runPipeline(opts: PipelineOptions): Promise<void> {
   if (runner.level !== 'abo' && runner.resetHint) budget.resetHint = runner.resetHint
   const out = await writeOutput({ root: outRoot, basisRoot: PUBLIC_DATA, now, buildId, kind, stories: allStories, briefing, meta: { health: buildHealth(col.result.state.health, now), budget, notices: notices.slice(0, 20) }, log: say })
 
+  // fristen.json: kuratiert + automatische Modell-Abschaltungen (OpenRouter); einziger Schreiber build-fristen.ts
+  const oldFristen = await readJson<FristenFile | undefined>(join(PUBLIC_DATA, 'fristen.json'), undefined)
+  const fristenFile = buildFristen(oldFristen, CURATED_FRISTEN, { models: models.expirations ? [models.expirations] : [] }, now, say)
+  await writeJson(join(outRoot, 'fristen.json'), fristenFile, 0)
   if (models.modelsFile) await writeJson(join(outRoot, 'models.json'), models.modelsFile, 0)
   if (models.watchlist) await writeJson(join(outRoot, 'watchlist.json'), models.watchlist, 0)
 
