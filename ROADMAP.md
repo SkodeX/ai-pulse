@@ -112,6 +112,7 @@ Reihenfolge nach Nutzen; jedes Modul einzeln veröffentlichen.
 3. **Sicherheitslücken:** GHSA-Watchlist in einem Aufruf, NVD-Zeitfenster + Produkt-Regex, KEV/EPSS/MSRC, Gruppierung je Produkt, Severity-Heuristik. → `sicherheitsluecken`
 4. **Modelle & Ranglisten:** OpenRouter-Snapshot-Diff, Arena-Parquet + AA-Index → Anbieter-Watchlist wöchentlich, Alias-Tabelle, „Neue #1"-Erkennung. → `modelle-und-ranglisten`
 5. **Ansicht „Modelle & Tools"** (Wunsch 2026-10-25): Bestenliste je Einsatzzweck (Coding & Agenten, Text, WebDev, Vision, Preis-Leistung, Film/Video, Design, Game-Dev, Automatisierung), Tool-Vergleiche (Coding-Assistenten, Chat-Apps, lokale Modelle, Automatisierung & UIs), Modellerweiterungen als Verlauf je Anbieter, Modell-Steckbrief + Vergleich, „Mein Stack“ mit Trendpfeilen, Preis-Rechner, Filter Open-Weights/EU-Tauglichkeit; Aktualisierung 3× pro Woche (Mo, Mi, Fr 07:07) inkl. Opus-Urteil „Empfehlung für dich". Details: Steckbrief → `references/entscheidungen.md`.
+6. **Top-Listen „Die 50 besten …":** GitHub-Repos (KI), Claude Skills & Plugins, MCP-Server, Hugging Face (Modelle/Spaces) – je mit Use-Case-Beschreibung, Ranking aus Sternen + 7-Tage-Wachstum (nur gepflegte Projekte), „Aufsteiger der Woche", ★ Merker; wöchentliches Update sonntags, Texte für neue Einträge per Haiku. Details: Steckbrief → `references/entscheidungen.md`.
 
 **Skills außerdem:** `quellen` (Register-Einträge aller neuen Quellen), `dashboard-entwickeln` (Ansicht **Fristen**, Liste „Weitere Advisories"), `bewertung` (Sonder-`clusterKey`s und Score-Übernahmen).
 

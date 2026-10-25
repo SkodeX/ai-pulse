@@ -63,6 +63,12 @@ Ausgelagert aus dem Steckbrief, damit dieser klein bleibt. Hier nachsehen, wenn 
   - **Startups hoch:** Dev-Tool-Startups, EU/DE-Startups (Mistral, Aleph Alpha, Black Forest Labs, DeepL …), China-Labs (DeepSeek, Qwen, Kimi, GLM, MiniMax).
   - **Sicherheit:** Lücken in den eigenen Tools, Prompt Injection & Agenten/MCP, Datenschutz-Vorfälle; allgemeine Lücken nur, wenn kritisch oder aktiv ausgenutzt.
   - **Zusammenfassungen:** gemischt – kurz das Wichtigste, bei Dev-Themen mit technischen Details.
+- **Top-Listen „Die 50 besten …" (Wunsch 2026-10-25, Phase 4/5, Tab „Modelle & Tools" → Unterseite)** → `modelle-und-ranglisten`, `quellen`, `bewertung`:
+  - Vier Listen à bis zu 50 Einträge, je mit kurzer deutscher **Use-Case-Beschreibung** („wofür nimmt man das?"): **GitHub-Repos (KI)** (Agenten, Frameworks, Coding-Tools, lokale Modelle, RAG …), **Claude Skills & Plugins** (Claude Code; Codex-/Cursor-Regeln, wo vorhanden), **MCP-Server**, **Hugging Face** (Trending Modelle und Spaces).
+  - **Ranking Mix:** Gesamtsterne + Wachstum der letzten 7 Tage, nur gepflegte Projekte (Commit ≤ 60 Tage); dazu Spalte „Aufsteiger der Woche". Sternverlauf wöchentlich in `state/` speichern (Wachstum selbst berechnen).
+  - **Quellen (ohne Keys/kostenlos, beim Bauen prüfen):** GitHub-Search-API über `AIPULSE_GITHUB_TOKEN` (Themen wie `llm`, `ai-agents`, `mcp`, `claude-code`), offizielle MCP-Registry, Skill-/Plugin-Marktplätze auf GitHub (z. B. Anthropic-Skills-Repo, Awesome-Listen), HF-API `trending`. Keine Reddit-/Product-Hunt-API (`nicht-nutzen.md`).
+  - **Update wöchentlich** (Sonntag im 07:07-Lauf); Use-Case-Texte nur für neue Einträge per Haiku 5.5 (gebündelt, wenige Aufrufe), bestehende Texte bleiben.
+  - **Merker:** Einträge per ★ merken (lokal; mit dem Feedback-Worker auch geräteübergreifend und als Abschnitt im Spickzettel).
 - **Spickzettel (Wunsch 2026-10-25, Phase 6 mit dem Feedback-Worker)** → `feedback-worker`, `bewertung`, `dashboard-entwickeln`:
   - Nutzer markiert Meldungen mit 📌 (optional kurze Notiz); Markierungen gehen wie 👍/👎 in Cloudflare KV (Browser-Token).
   - **Privat:** Spickzettel liegt nur in KV (nie im öffentlichen Repo/`public/data/`), Abruf im Dashboard nur mit dem Geräte-Token (neuer Endpunkt, z. B. `GET /cheatsheet`), Bereich unter „Mehr".
