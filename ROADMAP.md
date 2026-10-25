@@ -111,6 +111,7 @@ Reihenfolge nach Nutzen; jedes Modul einzeln veröffentlichen.
 2. **Gesetze & Fristen:** Statusmodell, strukturierte Quellen setzen den Status, kuratierte Fristen-Tabelle, Ansicht **Fristen**. → `gesetze-und-fristen`
 3. **Sicherheitslücken:** GHSA-Watchlist in einem Aufruf, NVD-Zeitfenster + Produkt-Regex, KEV/EPSS/MSRC, Gruppierung je Produkt, Severity-Heuristik. → `sicherheitsluecken`
 4. **Modelle & Ranglisten:** OpenRouter-Snapshot-Diff, Arena-Parquet + AA-Index → Anbieter-Watchlist wöchentlich, Alias-Tabelle, „Neue #1"-Erkennung. → `modelle-und-ranglisten`
+5. **Ansicht „Modelle & Tools"** (Wunsch 2026-10-25): Bestenliste je Einsatzzweck (Coding & Agenten, Text, WebDev, Vision, Preis-Leistung, Film/Video, Design, Game-Dev, Automatisierung), Tool-Vergleiche (Coding-Assistenten, Chat-Apps, lokale Modelle, Automatisierung & UIs), Modellerweiterungen als Verlauf je Anbieter, wöchentlich ein Opus-Urteil „Empfehlung für dich". Details: Steckbrief → `references/entscheidungen.md`.
 
 **Skills außerdem:** `quellen` (Register-Einträge aller neuen Quellen), `dashboard-entwickeln` (Ansicht **Fristen**, Liste „Weitere Advisories"), `bewertung` (Sonder-`clusterKey`s und Score-Übernahmen).
 
