@@ -54,7 +54,15 @@ Ausgelagert aus dem Steckbrief, damit dieser klein bleibt. Hier nachsehen, wenn 
 ## Offene Punkte (Entscheidung des Nutzers)
 
 - ~~Vor Phase 1 Schritt 1~~ **geklärt 2026-10-25:** Repo `SkodeX/ai-pulse` öffentlich angelegt und gepusht, Lizenz **MIT**, `.claude/` und `docs/recherche/` werden **mit veröffentlicht**. Git-Identität `SkodeX <25643926+SkodeX@users.noreply.github.com>`.
-- **Phase 2:** Profil – Interessen/Desinteressen über die fünf Tools hinaus (Agenten, MCP, Coding-Assistenten vs. Gadgets, Krypto …), selbst gehostete Tools (Ollama, Open WebUI, n8n)?
+- ~~Phase 2: Profil~~ **geklärt 2026-10-25** (2 Fragerunden) → Grundlage für `pipeline/config/profile.ts`:
+  - **Hoch** (`personal`): Agenten & Coding-Tools (Claude Code, Codex, Cursor, Copilot, MCP), neue Modelle & Benchmarks, Produkt & Strategie (Markt, Geschäftsmodelle, Funding), Recht & Regulierung (AI Act, DSGVO, AGB).
+  - **Niedrig:** Gadgets/Consumer-Hardware, Krypto/Web3, Bild-/Video-/Musik-KI, Hype & Promi-Zitate.
+  - **Hype & Zitate als eigener Bereich:** Meldungen mit `hype: true` erscheinen nicht in den Top-Stories, sondern in einem eigenen Chip „Hype & Zitate“ (Anzeige-Bereich über `Story.hype`, keine 12. Kategorie) → `dashboard-entwickeln`, `bewertung`.
+  - **Selbst gehostet:** Ollama/lokale Modelle, n8n, Open WebUI, ComfyUI, dazu Meldungen über weitere erfolgreiche und schnell wachsende Self-hosted-/Open-Source-Tools.
+  - **Beruf:** Produktmanagement, Softwareentwicklung, Beratung/Strategie, KI-Einführung im Konzern/Mittelstand (Compliance).
+  - **Startups hoch:** Dev-Tool-Startups, EU/DE-Startups (Mistral, Aleph Alpha, Black Forest Labs, DeepL …), China-Labs (DeepSeek, Qwen, Kimi, GLM, MiniMax).
+  - **Sicherheit:** Lücken in den eigenen Tools, Prompt Injection & Agenten/MCP, Datenschutz-Vorfälle; allgemeine Lücken nur, wenn kritisch oder aktiv ausgenutzt.
+  - **Zusammenfassungen:** gemischt – kurz das Wichtigste, bei Dev-Themen mit technischen Details.
 - **Phase 3:** Server-Hardware (Mini-PC, Pi 5 oder NAS – NAS ohne systemd → Docker-Variante in `job-betrieb`); Backup-Ziel für `~aipulse/.local/share/ai-pulse/` (AGB-Snapshots, nicht wiederbeschaffbar); automatischer Neustart nach Sicherheitsupdates ja/nein; **Impressum/Datenschutzerklärung** vor dem Livegang.
 - **Phase 6:** KV-Jurisdiktion (`--jurisdiction eu` oder keine) – einmalig vor `kv namespace create`.
 - Optionale kostenlose Keys (später): `DIP_API_KEY` (Mail an parlamentsdokumentation@bundestag.de), `NVD_API_KEY`, `ARTIFICIAL_ANALYSIS_API_KEY`, `API_DATA_GOV_KEY`, `COURTLISTENER_TOKEN`, `OPENSTATES_API_KEY`.
