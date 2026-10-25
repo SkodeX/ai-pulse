@@ -132,8 +132,8 @@ Reihenfolge nach Nutzen; jedes Modul einzeln veröffentlichen.
 
 1. Cloudflare Worker `ai-pulse-feedback` + KV, zwei Tokens (Schreiben im Browser, Lesen nur auf dem Server), CORS nur `skodex.github.io`.
 2. 👍/👎 in der Story-Karte, Token einmalig in den Einstellungen.
-4. **Spickzettel (privat):** 📌-Markierungen mit Notiz in KV; Opus pflegt morgens bei neuen Markierungen einen thematischen Spickzettel (Veraltetes ersetzen, Datum + Quelle), ergänzt um Änderungen an eigenen Tools, Fristen und Bestenliste; Abruf nur mit Geräte-Token.
 3. Job liest Feedback vor dem Bewerten, verdichtet es zu einem Präferenzprofil und gibt nur das Profil an Claude. Rohe Votes nie ins öffentliche Repo.
+4. **Spickzettel (privat):** 📌-Markierungen mit Notiz in KV; Opus pflegt morgens bei neuen Markierungen einen thematischen Spickzettel (Veraltetes ersetzen, Datum + Quelle), ergänzt um Änderungen an eigenen Tools, Fristen und Bestenliste; Abruf nur mit Geräte-Token.
 
 **Skills:** `feedback-worker`, `bewertung` (Profil im Kontext der Stufe 1), `dashboard-entwickeln` (Knöpfe, `aipulse.votes`), `job-betrieb` (`FEEDBACK_READ_TOKEN` in der Server-Env).
 
