@@ -1,0 +1,12 @@
+Kategorien – genau ein Schlüssel; bei Mehrdeutigkeit gilt die erste passende Zeile:
+1. sicherheit – Schwachstellen (CVE, GHSA), Exploits, Prompt-Injection-Angriffe, Datenlecks und Vorfälle bei KI-Anbietern, Missbrauch von KI-Diensten.
+2. gesetze – Gesetze, Verordnungen, Behörden- und Aufsichtsverfahren (auch Datenschutzbehörden), Gerichtsverfahren und Urteile.
+3. vertraege – AGB, Nutzungsrichtlinien, Datenschutzerklärungen, Lizenzbedingungen der Anbieter.
+4. preise – Preis- und Planänderungen, Rate Limits, API-Änderungen, Deprecations und Abschaltungen, Breaking Changes in SDKs.
+5. funding – Finanzierungsrunden, Bewertungen, Übernahmen, Börsengänge.
+6. modelle – neue oder aktualisierte Modelle (auch Open-Weight), Modellversionen, neue Modellfähigkeiten.
+7. startups – junge Unternehmen, Neugründungen, neue Anbieter, YC-Firmen – ohne Finanzierungsrunde.
+8. opensource – Open-Source-Projekte, Bibliotheken, Frameworks, Entwickler- und Coding-Werkzeuge und deren Releases.
+9. forschung – Papers, Benchmarks, Ranglisten (neue Nr. 1), Evaluationen, Studien.
+10. ideen – neue Produktfunktionen und Anwendungsideen, die etwas Neues ermöglichen (Feature-Starts in ChatGPT-, Claude-, Gemini-Apps, Show-HN-Projekte).
+11. neuigkeiten – alles andere: Unternehmens- und Branchennachrichten, Partnerschaften, Personalien, Strategie, Infrastruktur.

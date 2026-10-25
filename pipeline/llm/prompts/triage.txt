@@ -1,0 +1,1 @@
+Aufgabe: Ordne jeden Kandidaten ein und bewerte ihn. Gib für jeden ref genau ein Element zurück, auch für irrelevante Kandidaten.

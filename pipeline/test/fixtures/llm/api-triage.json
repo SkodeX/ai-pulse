@@ -1,0 +1,11 @@
+{
+ "note": "Aufgezeichnete Form einer Notfall-API-Antwort (Triage); Inhalte als Platzhalter. refs werden je Paket umgeschrieben.",
+ "usage": { "input_tokens": 9100, "output_tokens": 2300 },
+ "data": {
+  "items": [
+   { "ref": "k01", "relevant": true, "category": "modelle", "tags": ["OpenAI", "GPT-6"], "clusterKey": "openai-gpt-6-luna-release", "titleDe": "OpenAI veröffentlicht GPT-6 Luna in der API", "impact": 8, "personal": 8, "hype": false, "incidentKind": "none", "law": null },
+   { "ref": "k02", "relevant": true, "category": "gesetze", "tags": ["EU", "AI Act"], "clusterKey": "eu-ai-act-omnibus-delay", "titleDe": "EU verschiebt Hochrisiko-Regeln des AI Act", "impact": 7, "personal": 9, "hype": false, "incidentKind": "none", "law": { "status": "in_kraft", "jurisdiction": "EU", "effectiveDate": "2026-07-27" } },
+   { "ref": "k03", "relevant": false, "category": "neuigkeiten", "tags": [], "clusterKey": "misc-sports-results-weekend", "titleDe": "Sportergebnisse", "impact": 1, "personal": 1, "hype": false, "incidentKind": "none", "law": null }
+  ]
+ }
+}

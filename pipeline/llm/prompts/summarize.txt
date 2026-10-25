@@ -1,0 +1,8 @@
+Aufgabe: Fasse jede Story zusammen. Gib für jeden ref genau ein Element zurück.
+Schreibe eigenständig auf Deutsch, übernimm keine Sätze aus dem Artikel, keine wörtlichen Zitate.
+summary: 2–4 Sätze – was ist passiert, wer, was ist neu, welche Zahlen sind belegt. Bei Entwickler-Themen mit den wichtigsten technischen Details (Version, API, Preis, Kontext).
+whyImportant: 1 Satz zur Tragweite für die KI-Welt.
+forYou: 1 Satz, was das für den Leser und seine Werkzeuge heißt; Du-Form; ehrlich „kaum", wenn kaum.
+titleDe: wie in den Feldregeln – sachlich, höchstens 90 Zeichen, Akteur vorn.
+Nenne nur Fakten aus dem Artikel. Fehlt etwas, lass es weg statt zu raten.
+Prüfe impact und personal anhand des Artikels; ändere sie höchstens um 2.

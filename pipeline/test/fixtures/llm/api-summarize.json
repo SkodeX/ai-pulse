@@ -1,0 +1,9 @@
+{
+ "note": "Aufgezeichnete Form einer Notfall-API-Antwort (Summarize); Texte als Platzhalter.",
+ "usage": { "input_tokens": 14000, "output_tokens": 3900 },
+ "data": {
+  "items": [
+   { "ref": "s01", "titleDe": "Platzhalter-Titel", "summary": "Platzhalter-Zusammenfassung in zwei Sätzen. Zweiter Satz.", "whyImportant": "Platzhalter: Tragweite.", "forYou": "Platzhalter: Bedeutung für dich.", "impact": 10, "personal": 2, "hype": false }
+  ]
+ }
+}

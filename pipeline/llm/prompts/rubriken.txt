@@ -1,0 +1,17 @@
+impact – Tragweite für die KI-Welt (ganze Zahl 1–10):
+- 9–10 Durchbruch oder großes Release: neue Flaggschiff-Generation eines Top-Labs mit klarem Leistungssprung, Übernahme in zweistelliger Milliardenhöhe, aktiv ausgenutzte Lücke in einem Massenprodukt, verabschiedetes Gesetz mit neuen Pflichten.
+- 7–8 bedeutendes Update: neue Modellvariante eines großen Anbieters, deutliche Preisänderung einer großen API, Runde ab 1 Mrd. USD, neue Nr. 1 in einer großen Rangliste, Urteil mit Signalwirkung.
+- 5–6 beachtenswert: spürbares Feature-Update, mittlere Runde, solides Paper eines großen Labs, Behördenleitlinie, wichtiges Open-Source-Release.
+- 3–4 klein: Wartungs-Release, Nischen-Startup, Kommentar mit wenig neuen Fakten.
+- 1–2 Randnotiz oder Hype: PR ohne Substanz, Gerüchte, Listen-Artikel.
+- Hype begrenzt impact auf höchstens 5.
+
+personal – Relevanz für den Leser (ganze Zahl 1–10):
+- 9–10 betrifft eines der eigenen Werkzeuge direkt oder verlangt Handeln: Preis- oder Limitänderung, AGB, Nutzungsrichtlinie oder Datenschutz, Abschaltung eines genutzten Modells, Sicherheitslücke mit Update-Empfehlung, große neue Funktion. EU- oder DE-Recht mit Frist oder Pflicht für Anbieter oder Nutzer (AI Act, KI-MIG, Verfahren gegen genutzte Anbieter).
+- 7–8 neue per API nutzbare Modelle der großen Anbieter und der China-Labs; Coding-, Agenten- und MCP-Werkzeuge; Strategieschritte großer Labs mit Produktfolgen; EU-Regulierung im Verfahren; Dev-Tool- und EU/DE-Startups; schnell wachsende Self-hosted-Tools.
+- 5–6 allgemeine Lab- und Branchennews, große Funding-Runden, neue Nr. 1, breit nützliche Open-Source-Tools.
+- 3–4 Grundlagenforschung ohne Produktbezug, US-Recht ohne EU-Wirkung, Startups außerhalb des Profils.
+- 1–2 Gadgets, Consumer-Hardware, Gaming, Krypto, Bild-/Video-/Musik-KI ohne Bezug zur Arbeit, Promi-Zitate.
+- Relevanz für Einführungsentscheidungen in Unternehmen hebt innerhalb der Spanne um 1.
+
+hype – true, wenn die Behauptungen größer sind als die belegte Fähigkeit: Ankündigung ohne Verfügbarkeit, Preis oder Benchmarks; AGI- oder „ersetzt alle"-Rhetorik; Aussagen und Zitate von Chefs oder Prominenten ohne neue Fakten; unbestätigte Leaks und Gerüchte; Eigen-Benchmarks ohne Vergleichbarkeit.

@@ -1,18 +1,27 @@
 // Einstieg des Jobs. Phase 1: nur --stage collect (Trockenlauf: sammeln, filtern, clustern, ohne Claude).
 
+import { readdir } from 'node:fs/promises'
 import { join } from 'node:path'
 import { parseArgs } from 'node:util'
-import { clusterItems, markShadowSeen } from './cluster/cluster.ts'
-import { collect } from './collect/collect.ts'
-import { markStale } from './collect/health.ts'
+import type { Latest, RunKind } from '../shared/types.ts'
+import { markShadowSeen } from './cluster/cluster.ts'
 import { headline, rawItemsJson, reportMd, summarize } from './collect/report.ts'
+import { LIMITS } from './config/models.ts'
 import { SOURCES, SOURCE_BY_ID } from './config/sources.ts'
-import type { Version } from './filter/releases.ts'
-import { prefilter } from './filter/prefilter.ts'
-import { HOUR, writeJson, writeText } from './lib/util.ts'
+import { briefingPool, runBrief } from './llm/brief.ts'
+import { LlmRunner } from './llm/budget.ts'
+import { runSummarize } from './llm/summarize.ts'
+import { contextBlock, runTriage } from './llm/triage.ts'
+import { HOUR, readJson, writeJson, writeText } from './lib/util.ts'
+import { PUBLIC_DATA, buildIdFor, runKindFor, runPipeline } from './pipeline.ts'
+import { preScore } from './score/prescore.ts'
+import { buildStory, sortStories } from './score/stories.ts'
+import { collectStage } from './stages.ts'
 import { CACHE_DIR, SHADOW_DIR, loadState, prepareShadow, saveState } from './state.ts'
+import type { Cluster } from './types.ts'
 
-const STAGE_PHASE: Record<string, number> = { triage: 2, summarize: 2, brief: 2, review: 2, terms: 4, watchlist: 4, weekly: 5 }
+const STAGE_PHASE: Record<string, number> = { terms: 4, watchlist: 4, weekly: 5 }
+const KINDS = ['morning', 'midday', 'evening'] as const
 
 function exitLater(message: string): never {
   console.error(message)
@@ -37,15 +46,93 @@ async function main(): Promise<void> {
   })
 
   if (values.kind === 'weekly') exitLater('--kind weekly kommt in Phase 5')
-  if (values.stage && values.stage !== 'collect') {
-    const phase = STAGE_PHASE[values.stage]
-    exitLater(phase ? `--stage ${values.stage} kommt in Phase ${phase}` : `unbekannte Stufe: ${values.stage}`)
-  }
-  if (!values.stage && !values['dry-run']) exitLater('Voller Lauf (Bewertung, Ausgabe nach public/data/) kommt in Phase 2; jetzt: npm run collect')
-  if (values.limit) exitLater('--limit betrifft die Claude-Stufen und kommt in Phase 2')
-  if (process.env['AIPULSE_SIMULATE_LIMIT'] && !values.stage && !values['dry-run']) exitLater('AIPULSE_SIMULATE_LIMIT ist im vollen Lauf verboten')
+  if (values.kind && !(KINDS as readonly string[]).includes(values.kind)) exitLater(`unbekannter Lauf-Typ: ${values.kind}`)
+  const kind = values.kind as RunKind | undefined
+  const limit = values.limit ? Number(values.limit) : undefined
+  if (limit !== undefined && !(limit > 0)) exitLater('--limit braucht eine positive Zahl')
+  const stage = values.stage
+  if (stage && STAGE_PHASE[stage]) exitLater(`--stage ${stage} kommt in Phase ${STAGE_PHASE[stage]}`)
+  if (stage && !['collect', 'triage', 'summarize', 'brief', 'review'].includes(stage)) exitLater(`unbekannte Stufe: ${stage}`)
 
-  await collectDryRun({ only: values.only, fresh: values.fresh })
+  if (stage === 'collect' || (values['dry-run'] && !stage)) return collectDryRun({ only: values.only, fresh: values.fresh })
+  if (stage === 'triage') return stageTriage(limit, kind)
+  if (stage === 'summarize' || stage === 'brief') return stagePreview(stage, limit, kind)
+  if (stage === 'review') return stageReview()
+  if (values.only) exitLater('--only gibt es nur mit --stage collect bzw. im Smoke-Test')
+
+  const full = limit === undefined
+  if (full && process.env['AIPULSE_FULL_RUN'] !== '1') exitLater('Voller Lauf schreibt public/data/ und state/ und läuft nur auf dem Server (AIPULSE_FULL_RUN=1). Lokal: npm run pipeline -- --limit 5')
+  if (full && process.env['AIPULSE_SIMULATE_LIMIT']) exitLater('AIPULSE_SIMULATE_LIMIT ist im vollen Lauf verboten')
+  await runPipeline({ full, limit, kind })
+}
+
+// --stage triage: jüngste candidates.json → Triage (≤ --limit) → .cache/run/<id>/triage.json
+async function stageTriage(limit: number | undefined, kind: RunKind | undefined): Promise<void> {
+  const now = new Date()
+  const dirs = (await readdir(join(CACHE_DIR, 'dry'))).filter(d => /^\d{4}-/.test(d)).sort().reverse()
+  let cand: { clusters: Cluster[] } | undefined
+  for (const d of dirs) {
+    cand = await readJson<{ clusters: Cluster[] } | undefined>(join(CACHE_DIR, 'dry', d, 'candidates.json'), undefined)
+    if (cand && cand.clusters.length > 0) break
+  }
+  if (!cand) exitLater('keine candidates.json – erst npm run collect')
+  const k = kind ?? runKindFor(now)
+  const id = buildIdFor(now, k)
+  const clusters = [...cand.clusters].sort((a, b) => (b.preScore ?? 0) - (a.preScore ?? 0)).slice(0, Math.min(limit ?? LIMITS.triageMax, LIMITS.triageMax))
+  const runner = new LlmRunner({ runId: id, kind: k, full: false, usageDir: join(CACHE_DIR, 'usage'), start: now })
+  const triage = await runTriage(runner, clusters, contextBlock(now, k, []), CACHE_DIR)
+  const stories = clusters.map(c => buildStory(c, c.preScore ?? preScore(c, now), triage.get(c), now))
+  await runner.finish()
+  await writeJson(join(CACHE_DIR, 'run', id, 'triage.json'), { generatedAt: now.toISOString(), stories })
+  console.log(`Triage ${id}: ${triage.size}/${clusters.length} bewertet · CLI ${runner.cliCalls} · Backend ${runner.level}`)
+  for (const s of sortStories(stories).slice(0, 10)) console.log(`  ${s.score.toFixed(1)} (${s.impact}/${s.personal}) ${s.category.padEnd(11)} ${s.title.slice(0, 80)}`)
+  for (const e of runner.errors) console.log(`  Fehler: ${e}`)
+}
+
+// --stage summarize|brief: Vorschau auf Basis der jüngsten latest.json (public/data, sonst .cache/run)
+async function stagePreview(stage: 'summarize' | 'brief', limit: number | undefined, kind: RunKind | undefined): Promise<void> {
+  const now = new Date()
+  const latest = await newestLatest()
+  if (!latest) exitLater('keine latest.json – erst npm run pipeline -- --limit 5')
+  const k = kind ?? runKindFor(now)
+  const id = buildIdFor(now, k)
+  const runner = new LlmRunner({ runId: id, kind: k, full: false, usageDir: join(CACHE_DIR, 'usage'), start: now })
+  if (stage === 'brief') {
+    const b = await runBrief(runner, briefingPool(latest.stories, k, undefined), k, now, [], CACHE_DIR)
+    await writeJson(join(CACHE_DIR, 'run', id, 'briefing.json'), b)
+    console.log(`Briefing ${id} (${b.model}): ${b.title}\n  ${b.intro}`)
+  } else {
+    const todo = sortStories(latest.stories.filter(s => !s.summary)).slice(0, Math.min(limit ?? LIMITS.summarizeMax, LIMITS.summarizeMax))
+    const map = await runSummarize(runner, todo.map(s => ({ story: s, text: s.originalTitle })), `Lauf: ${k}`, CACHE_DIR)
+    await writeJson(join(CACHE_DIR, 'run', id, 'summaries.json'), Object.fromEntries(map))
+    console.log(`Zusammenfassungen ${id}: ${map.size}/${todo.length}`)
+  }
+  await runner.finish()
+  for (const e of runner.errors) console.log(`  Fehler: ${e}`)
+}
+
+async function newestLatest(): Promise<Latest | undefined> {
+  const pub = await readJson<Latest | undefined>(join(PUBLIC_DATA, 'latest.json'), undefined)
+  if (pub) return pub
+  const runs = (await readdir(join(CACHE_DIR, 'run')).catch(() => [] as string[])).sort().reverse()
+  for (const r of runs) {
+    const l = await readJson<Latest | undefined>(join(CACHE_DIR, 'run', r, 'latest.json'), undefined)
+    if (l) return l
+  }
+  return undefined
+}
+
+// --stage review: Stichprobe für den Nutzer (kein Claude, schreibt nichts nach public/data/ oder state/)
+async function stageReview(): Promise<void> {
+  const latest = await newestLatest()
+  if (!latest) exitLater('keine latest.json')
+  const s = sortStories(latest.stories)
+  const rule = s.filter(x => x.ratedBy === 'regel')
+  const claude = s.filter(x => x.ratedBy !== 'regel')
+  const mid = Math.floor(claude.length / 2)
+  const pick = [...claude.slice(0, 5), ...claude.slice(Math.max(mid - 2, 5), mid + 3), ...claude.slice(-5), ...rule.slice(0, 5)]
+  console.log('| # | Titel | Kategorie | Tragweite | Für mich | Hype | Quelle |\n|---|---|---|---|---|---|---|')
+  pick.forEach((x, i) => console.log(`| ${i + 1} | ${x.title.replace(/\|/g, '/')} | ${x.category} | ${x.impact} | ${x.personal} | ${x.hype ? 'ja' : '–'} | ${x.sources[0]?.name ?? ''}${x.ratedBy === 'regel' ? ' (Regel)' : ''} |`))
 }
 
 export async function collectDryRun(opts: { only?: string; fresh: boolean }): Promise<void> {
@@ -62,29 +149,11 @@ export async function collectDryRun(opts: { only?: string; fresh: boolean }): Pr
 
   await prepareShadow(opts.fresh)
   const state = await loadState(SHADOW_DIR)
-  const prevReleases = new Map<string, Version | undefined>(Object.entries(state.sourceState).map(([id, s]) => [id, s.release]))
-
-  const result = await collect({ sources, state, now, force: !!onlyIds, githubToken: process.env['AIPULSE_GITHUB_TOKEN'] || undefined })
-  const entries = result.runs.flatMap(r => r.entries)
-  const pf = prefilter(entries, { now, firstSeen: now.toISOString(), seen: state.seen, prevReleases })
-
-  // Health ergänzen: Flutbremse, neue Items, Frische
-  const newBySource = new Map<string, number>()
-  for (const item of pf.items) if (!item.seenStoryId) newBySource.set(item.sourceId, (newBySource.get(item.sourceId) ?? 0) + 1)
-  for (const run of result.runs) {
-    const h = result.state.health.sources[run.source.id]
-    if (!h) continue
-    if (run.fetched) {
-      const flood = pf.hints[run.source.id]?.includes('flood') ?? false
-      if (flood && !h.hints.includes('flood')) h.hints.push('flood')
-      if (flood && !run.hints.includes('flood')) run.hints.push('flood')
-      h.floodRuns = flood ? (h.floodRuns ?? 0) + 1 : 0
-      if ((newBySource.get(run.source.id) ?? 0) > 0) h.lastNewItemAt = now.toISOString()
-    }
-    markStale(run.source, h, now)
-  }
-
-  const { clusters, attached, seenDropped } = clusterItems(pf.items, now)
+  const { result, pf, clusters: raw, seenItems } = await collectStage(sources, state, now, !!onlyIds)
+  // Stufe 0b: Vor-Score; Trockenlauf hat keine Abgleich-Basis → seen-Treffer mit Story fallen weg
+  const clusters = raw.map(c => ({ ...c, preScore: preScore(c, now) })).sort((a, b) => b.preScore - a.preScore)
+  const attached = 0
+  const seenDropped = seenItems.length
 
   const seen = markShadowSeen(state.seen, clusters)
 

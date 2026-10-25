@@ -1,0 +1,10 @@
+{
+ "note": "Aufgezeichnete Form einer Notfall-API-Antwort (Briefing); Texte als Platzhalter.",
+ "usage": { "input_tokens": 5200, "output_tokens": 900 },
+ "data": {
+  "title": "Platzhalter-Briefing",
+  "intro": "Platzhalter-Einleitung.",
+  "items": [ { "storyId": "unbekannt000", "text": "Wird verworfen, weil die id nicht in der Eingabe steht." } ],
+  "outlook": ""
+ }
+}
