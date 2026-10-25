@@ -3,7 +3,7 @@
 
 import type { Category } from '../../shared/categories.ts'
 
-export type SourceKind = 'feed' | 'json' | 'sitemap' | 'htmldiff' | 'github'   // Phase 4: + 'parquet' | 'terms'
+export type SourceKind = 'feed' | 'json' | 'sitemap' | 'htmldiff' | 'github' | 'detector'   // detector: eigener Abruf in pipeline/models/
 export type Cadence = '3x' | 'daily07' | 'weekly'
 export type SourceRole = 'official' | 'press' | 'community' | 'aggregator'
 export interface UrlContext { now: Date; lastSuccess?: string }
@@ -344,6 +344,18 @@ export const SOURCES: Source[] = [
   gh('transformers', 'huggingface/transformers', 5),
   gh('open-webui', 'open-webui/open-webui', 10),
   gh('qwen-code', 'QwenLM/qwen-code', 30),
+
+  // ---------- Detektoren (Skill modelle-und-ranglisten; Abruf in pipeline/models/, nicht in collect) ----------
+  {
+    id: 'openrouter-models', name: 'OpenRouter', kind: 'detector', role: 'aggregator', priority: 'nice', cadence: '3x', lang: 'en', paywall: false,
+    url: 'https://openrouter.ai/api/v1/models', categoryHint: ['modelle'], aiOnly: true, fallbacks: [],
+    notes: 'neue Modelle, Preise, Abschaltungen; AA-Index und Design Arena für die Bestenlisten',
+  },
+  {
+    id: 'arena-parquet', name: 'LMArena (Hugging Face)', kind: 'detector', role: 'aggregator', priority: 'nice', cadence: 'daily07', lang: 'en', paywall: false,
+    url: 'https://huggingface.co/datasets/lmarena-ai/leaderboard-dataset/resolve/main/webdev/latest-00000-of-00001.parquet', categoryHint: ['forschung'], aiOnly: true, fallbacks: [],
+    notes: 'Ranglisten text/webdev/agent/vision/text_to_image/text_to_video, HEAD mit X-Linked-ETag; Bestenlisten Mo/Mi/Fr',
+  },
 
   // ---------- Nur als Fallback ----------
   olshansk('olshansk-openai', 'OpenAI News (Olshansk-Spiegel)', 'feed_openai_main.xml', 'openai'),

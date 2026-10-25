@@ -1,0 +1,13 @@
+{
+ "note": "Gekürzte, strukturtreue Probe der OpenRouter-Modellliste (2026-10-25); Beschreibungen entfernt.",
+ "data": [
+  { "id": "anthropic/claude-opus-5.5", "canonical_slug": "anthropic/claude-opus-5.5-20261001", "hugging_face_id": null, "name": "Anthropic: Claude Opus 5.5", "created": 1790000000, "context_length": 1000000, "architecture": { "input_modalities": ["text", "image"] }, "pricing": { "prompt": "0.000005", "completion": "0.000025" }, "expiration_date": null, "benchmarks": { "artificial_analysis": { "intelligence_index": 57.6, "coding_index": 60.1, "agentic_index": 70.2 }, "design_arena": [{ "arena": "models", "category": "gamedev", "elo": 1450 }] } },
+  { "id": "anthropic/claude-sonnet-4.5", "canonical_slug": "anthropic/claude-4.5-sonnet-20250929", "hugging_face_id": null, "name": "Anthropic: Claude Sonnet 4.5", "created": 1759000000, "context_length": 1000000, "pricing": { "prompt": "0.000003", "completion": "0.000015" }, "expiration_date": null },
+  { "id": "z-ai/glm-4.5", "canonical_slug": "z-ai/glm-4.5", "hugging_face_id": "zai-org/GLM-4.5", "name": "Z.ai: GLM 4.5", "created": 1753000000, "context_length": 131072, "pricing": { "prompt": "0.0000006", "completion": "0.0000022" }, "expiration_date": "2026-12-31", "benchmarks": { "artificial_analysis": { "intelligence_index": 30.1 } } },
+  { "id": "z-ai/glm-4.5:free", "canonical_slug": "z-ai/glm-4.5", "hugging_face_id": "zai-org/GLM-4.5", "name": "Z.ai: GLM 4.5 (free)", "created": 1753000000, "pricing": { "prompt": "0", "completion": "0" }, "expiration_date": "2026-11-01" },
+  { "id": "~openai/gpt-sol-latest", "canonical_slug": "~openai/gpt-sol-latest", "name": "OpenAI: GPT Sol (latest)", "created": 1792000000, "pricing": { "prompt": "0.00001", "completion": "0.00004" } },
+  { "id": "openrouter/auto", "canonical_slug": "openrouter/auto", "name": "Auto Router", "created": 1700000000, "pricing": { "prompt": "-1", "completion": "-1" } },
+  { "id": "poolside/laguna-s-2.1", "canonical_slug": "poolside/laguna-s-2.1", "hugging_face_id": null, "name": "Poolside: Laguna S 2.1", "created": 1785000000, "pricing": { "prompt": "0.000001", "completion": "0.000003" }, "expiration_date": "2026-10-31" },
+  { "id": "recursive/flint-v1.0:free", "canonical_slug": "recursive/flint-v1.0", "hugging_face_id": "RecursiveSI/flint-v1.0", "name": "Recursive: Flint v1.0 (free)", "created": 1792500000, "pricing": { "prompt": "0", "completion": "0" }, "expiration_date": null }
+ ]
+}

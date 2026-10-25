@@ -140,6 +140,19 @@ export interface Frist {
   storyId?: string
 }
 
+// models.json – Seite „Modelle & Tools" (Wunsch 2026-10-25, Aktualisierung Mo/Mi/Fr)
+export interface ModelBoardRow { name: string; org: string; provider: string; value: number; price: number | null }
+export interface ModelBoard { id: string; title: string; hint: string; unit: string; source: string; rows: ModelBoardRow[] }
+export interface ModelsFile {
+  generatedAt: string
+  sources: { openrouterFetchedAt: string | null; arenaDates: Record<string, string | null> }
+  boards: ModelBoard[]
+  fresh: { name: string; provider: string; created: string; ctx: number; priceIn: number; priceOut: number; intel: number | null; vision: boolean }[]
+  expiring: { name: string; provider: string; date: string }[]
+  tools: { group: string; items: string[] }[]
+  recommendations?: Record<string, string>   // boardId/Tool-Gruppe → „Empfehlung für dich" (Opus, später)
+}
+
 // watchlist.json (Skill modelle-und-ranglisten)
 export interface WatchlistEntry {
   org: string

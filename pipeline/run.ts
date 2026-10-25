@@ -17,10 +17,11 @@ import { PUBLIC_DATA, buildIdFor, runKindFor, runPipeline } from './pipeline.ts'
 import { preScore } from './score/prescore.ts'
 import { buildStory, sortStories } from './score/stories.ts'
 import { collectStage } from './stages.ts'
-import { CACHE_DIR, SHADOW_DIR, loadState, prepareShadow, saveState } from './state.ts'
+import { loadModelsState, runModels } from './models/detect.ts'
+import { CACHE_DIR, SHADOW_DIR, STATE_DIR, loadState, prepareShadow, saveState } from './state.ts'
 import type { Cluster } from './types.ts'
 
-const STAGE_PHASE: Record<string, number> = { terms: 4, watchlist: 4, weekly: 5 }
+const STAGE_PHASE: Record<string, number> = { terms: 4, weekly: 5 }
 const KINDS = ['morning', 'midday', 'evening'] as const
 
 function exitLater(message: string): never {
@@ -52,12 +53,13 @@ async function main(): Promise<void> {
   if (limit !== undefined && !(limit > 0)) exitLater('--limit braucht eine positive Zahl')
   const stage = values.stage
   if (stage && STAGE_PHASE[stage]) exitLater(`--stage ${stage} kommt in Phase ${STAGE_PHASE[stage]}`)
-  if (stage && !['collect', 'triage', 'summarize', 'brief', 'review'].includes(stage)) exitLater(`unbekannte Stufe: ${stage}`)
+  if (stage && !['collect', 'triage', 'summarize', 'brief', 'review', 'watchlist'].includes(stage)) exitLater(`unbekannte Stufe: ${stage}`)
 
   if (stage === 'collect' || (values['dry-run'] && !stage)) return collectDryRun({ only: values.only, fresh: values.fresh })
   if (stage === 'triage') return stageTriage(limit, kind)
   if (stage === 'summarize' || stage === 'brief') return stagePreview(stage, limit, kind)
   if (stage === 'review') return stageReview()
+  if (stage === 'watchlist') return stageWatchlist()
   if (values.only) exitLater('--only gibt es nur mit --stage collect bzw. im Smoke-Test')
 
   const full = limit === undefined
@@ -122,6 +124,21 @@ async function newestLatest(): Promise<Latest | undefined> {
   return undefined
 }
 
+// --stage watchlist: Bestenlisten + Anbieter-Watchlist unabhängig vom Wochentag bauen → .cache/run/<id>/ (liest state/, schreibt ihn nicht)
+async function stageWatchlist(): Promise<void> {
+  const now = new Date()
+  const id = buildIdFor(now, runKindFor(now))
+  const r = await runModels(await loadModelsState(STATE_DIR), now, true)
+  const dir = join(CACHE_DIR, 'run', id)
+  if (r.modelsFile) await writeJson(join(dir, 'models.json'), r.modelsFile, 0)
+  if (r.watchlist) await writeJson(join(dir, 'watchlist.json'), r.watchlist, 0)
+  if (r.expirations) await writeJson(join(dir, 'expirations-openrouter.json'), r.expirations)
+  console.log(`Modelle ${id}: ${r.modelsFile?.boards.length ?? 0} Bestenlisten · ${r.watchlist?.providers.length ?? 0} Anbieter · ${r.modelsFile?.fresh.length ?? 0} neue Modelle · ${r.expirations?.items.length ?? 0} Abschaltungen (Watchlist) · Ausgabe ${dir}`)
+  for (const b of r.modelsFile?.boards ?? []) console.log(`  ${b.title}: ${b.rows.slice(0, 3).map(x => x.name).join(' · ')}`)
+  for (const p of r.watchlist?.providers.slice(0, 15) ?? []) console.log(`  #${p.combinedRank} ${p.displayName} (Arena ${p.arenaRating ?? '–'}, AA ${p.aaIndex ?? '–'}) ${p.reason.join('+')}`)
+  for (const e of r.errors) console.log(`  Fehler: ${e}`)
+}
+
 // --stage review: Stichprobe für den Nutzer (kein Claude, schreibt nichts nach public/data/ oder state/)
 async function stageReview(): Promise<void> {
   const latest = await newestLatest()
@@ -145,7 +162,7 @@ export async function collectDryRun(opts: { only?: string; fresh: boolean }): Pr
     console.error(`unbekannte Quellen-ID: ${unknown.join(', ')}`)
     process.exit(1)
   }
-  const sources = onlyIds ? onlyIds.map(id => SOURCE_BY_ID.get(id)!) : SOURCES.filter(s => !s.fallbackOnly)
+  const sources = onlyIds ? onlyIds.map(id => SOURCE_BY_ID.get(id)!) : SOURCES.filter(s => !s.fallbackOnly && s.kind !== 'detector')
 
   await prepareShadow(opts.fresh)
   const state = await loadState(SHADOW_DIR)

@@ -17,6 +17,8 @@ import { loadBasis, writeOutput } from './output/write.ts'
 import { preScore } from './score/prescore.ts'
 import { applyBoost, applySummary, attachSources, buildStory, matchBasis, mergeByKey, sortStories } from './score/stories.ts'
 import { collectStage } from './stages.ts'
+import { clusterItems } from './cluster/cluster.ts'
+import { loadModelsState, runModels, saveModelsState } from './models/detect.ts'
 import { CACHE_DIR, ROOT, STATE_DIR, loadState, saveState } from './state.ts'
 import type { Cluster } from './types.ts'
 
@@ -46,7 +48,7 @@ export async function runPipeline(opts: PipelineOptions): Promise<void> {
 
   // 0a: sammeln (state/ nur lesen; schreiben nur im vollen Lauf am Ende)
   const state = await loadState(STATE_DIR)
-  const col = await collectStage(SOURCES.filter(s => !s.fallbackOnly), state, now, false)
+  const col = await collectStage(SOURCES.filter(s => !s.fallbackOnly && s.kind !== 'detector'), state, now, false)
 
   // Abgleich mit bestehenden Stories
   const basis = await loadBasis(PUBLIC_DATA, now)
@@ -56,7 +58,12 @@ export async function runPipeline(opts: PipelineOptions): Promise<void> {
     const s = changed.get(item.seenStoryId!) ?? basisById.get(item.seenStoryId!)
     if (s && !s.sources.some(x => x.id === item.sourceId)) changed.set(s.id, { ...s, sources: [...s.sources, { id: item.sourceId, name: SOURCES.find(x => x.id === item.sourceId)?.name ?? item.sourceId, url: item.canonicalUrl, lang: item.lang }] })
   }
-  const { fresh, matched } = matchBasis(col.clusters, basis)
+  // Modell-Detektoren (OpenRouter jeder Lauf; Bestenlisten/Watchlist Mo/Mi/Fr) – Kandidaten mit vorgegebenem clusterKey
+  const modelsPrev = await loadModelsState(STATE_DIR)
+  const models = await runModels(modelsPrev, now, false)
+  for (const e of models.errors) say(`Modelle: ${e}`)
+  const detectorClusters = clusterItems(models.items.filter(i => !state.seen[i.key]), now).clusters
+  const { fresh, matched } = matchBasis([...col.clusters, ...detectorClusters], basis)
   for (const m of matched) changed.set(m.story.id, attachSources(changed.get(m.story.id) ?? m.story, m.cluster))
 
   // 0b: Vor-Score, Auswahl für Claude
@@ -66,7 +73,8 @@ export async function runPipeline(opts: PipelineOptions): Promise<void> {
   const runner = new LlmRunner({ runId: buildId, kind, full: opts.full, usageDir: opts.full ? join(STATE_DIR, 'usage') : join(CACHE_DIR, 'usage'), start: now })
 
   // 1: Triage
-  const ctx = contextBlock(now, kind, sortStories(basis).map(s => ({ clusterKey: s.clusterKey, title: s.title })))
+  const known = [...detectorClusters.map(c => ({ clusterKey: c.clusterKey, title: c.primary.title })), ...sortStories(basis).map(s => ({ clusterKey: s.clusterKey, title: s.title }))]
+  const ctx = contextBlock(now, kind, known)
   const triage = await runTriage(runner, forClaude, ctx, CACHE_DIR)
   const irrelevant: Cluster[] = []
   let built: Story[] = []
@@ -121,8 +129,12 @@ export async function runPipeline(opts: PipelineOptions): Promise<void> {
   if (runner.level !== 'abo' && runner.resetHint) budget.resetHint = runner.resetHint
   const out = await writeOutput({ root: outRoot, basisRoot: PUBLIC_DATA, now, buildId, kind, stories: allStories, briefing, meta: { health: buildHealth(col.result.state.health, now), budget, notices: notices.slice(0, 20) }, log: say })
 
+  if (models.modelsFile) await writeJson(join(outRoot, 'models.json'), models.modelsFile, 0)
+  if (models.watchlist) await writeJson(join(outRoot, 'watchlist.json'), models.watchlist, 0)
+
   // state/ nur im vollen Lauf, nach public/data/
   if (opts.full) {
+    await saveModelsState(STATE_DIR, models.state)   // Detektor-Ereignisse feuern nur bei Änderung gegenüber diesem Stand
     const seen = { ...state.seen }
     for (const s of built.filter(x => x.ratedBy !== 'regel')) for (const i of clusterOf.get(s.id)?.items ?? []) seen[i.key] ??= { firstSeen: i.firstSeen, storyId: s.id }
     for (const c of irrelevant) for (const i of c.items) seen[i.key] ??= { firstSeen: i.firstSeen }

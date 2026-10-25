@@ -53,6 +53,7 @@ function expectedShape(source: Source, githubRest: boolean): Shape {
     case 'sitemap': return 'sitemap'
     case 'htmldiff': return 'html'
     case 'github': return githubRest ? 'json' : 'feed'
+    case 'detector': return source.url.endsWith('.parquet') ? 'parquet' : 'json'
   }
 }
 

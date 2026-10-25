@@ -77,7 +77,7 @@ export function fetchPlan(source: Source, ctx: UrlContext, githubToken?: string)
     }
     return { url: urls.atom, accept: ACCEPT_FEED, mode: 'atom' }
   }
-  const accept = source.kind === 'json' ? ACCEPT_JSON : source.kind === 'htmldiff' ? ACCEPT_HTML : ACCEPT_FEED
+  const accept = source.kind === 'json' || source.kind === 'detector' ? ACCEPT_JSON : source.kind === 'htmldiff' ? ACCEPT_HTML : ACCEPT_FEED
   return { url: resolveUrl(source, ctx), accept, headers: source.headers }
 }
 
@@ -95,6 +95,7 @@ async function parse(ctx: ParseContext): Promise<ParseResult> {
     case 'sitemap': return parseSitemap(ctx)
     case 'htmldiff': return parseHtmlDiff(ctx)
     case 'github': return parseGithub(ctx)
+    case 'detector': return { entries: [], hints: [], error: 'format', errorDetail: 'Detektor – Abruf in pipeline/models/' }
   }
 }
 
