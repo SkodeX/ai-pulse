@@ -69,6 +69,7 @@ Ausgelagert aus dem Steckbrief, damit dieser klein bleibt. Hier nachsehen, wenn 
   - **Quellen (ohne Keys/kostenlos, beim Bauen prüfen):** GitHub-Search-API über `AIPULSE_GITHUB_TOKEN` (Themen wie `llm`, `ai-agents`, `mcp`, `claude-code`), offizielle MCP-Registry, Skill-/Plugin-Marktplätze auf GitHub (z. B. Anthropic-Skills-Repo, Awesome-Listen), HF-API `trending`. Keine Reddit-/Product-Hunt-API (`nicht-nutzen.md`).
   - **Update wöchentlich** (Sonntag im 07:07-Lauf); Use-Case-Texte nur für neue Einträge per Haiku 5.5 (gebündelt, wenige Aufrufe), bestehende Texte bleiben.
   - **Merker:** Einträge per ★ merken (lokal; mit dem Feedback-Worker auch geräteübergreifend und als Abschnitt im Spickzettel).
+- **Zusatzkredite (2026-10-25):** derzeit aus; Nutzer will sie mit Monatsgrenze 5 einschalten. Folge: Am Abo-Limit bricht `claude -p` dann nicht ab, sondern verbraucht die Kredite → die Limit-Erkennung greift erst nach deren Verbrauch; der Job bleibt bei ≤ 8 Aufrufen je Lauf. Echte Testläufe: klein erlaubt (`--limit 5`, danach 1× voller Umfang ≤ 8 Aufrufe). Notfall-API-Key: später (Phase 3).
 - **Spickzettel (Wunsch 2026-10-25, Phase 6 mit dem Feedback-Worker)** → `feedback-worker`, `bewertung`, `dashboard-entwickeln`:
   - Nutzer markiert Meldungen mit 📌 (optional kurze Notiz); Markierungen gehen wie 👍/👎 in Cloudflare KV (Browser-Token).
   - **Privat:** Spickzettel liegt nur in KV (nie im öffentlichen Repo/`public/data/`), Abruf im Dashboard nur mit dem Geräte-Token (neuer Endpunkt, z. B. `GET /cheatsheet`), Bereich unter „Mehr".
