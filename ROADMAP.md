@@ -95,7 +95,7 @@ Nach jeder Phase: Phasenstand im Steckbrief nachtragen, veröffentlichen (ab Pha
 
 1. **Heimserver einrichten** (Skill `job-betrieb`, Schritt-für-Schritt in `references/server-setup.md`): eigener Benutzer `aipulse`, Node 24, Claude Code per nativem Installer in fester Version (Updates bewusst), `CLAUDE_CODE_OAUTH_TOKEN` aus `claude setup-token`, `AIPULSE_GITHUB_TOKEN` ohne Rechte, Deploy-Key mit Schreibrecht nur für dieses Repo, `run.sh` (Lock, Env-Hygiene, `git pull --rebase`, Lauf, Push), systemd-Service + Timer (`Persistent=true` holt verpasste Läufe nach), danach `npm run smoke` auf dem Server.
 2. **GitHub:** `deploy.yml` (bei Push auf `main`: Vite-Build, Pages-Deploy), `watchdog.yml` (geplant; meldet, wenn `meta.json` älter als 14 h ist).
-3. **Dashboard** (Vite/React-PWA nach Vorbild Space): **Heute** (Briefing oben, Top-Stories), **Kategorien** (11 Chips), **Briefing**, Story-Karte (Scores, Quellen, Paywall-Hinweis, Zusammenfassung), Sortierung Gesamt/Tragweite/Für mich, **Gelesen/Merken**, Suche in den letzten 72 h, Mindest-Score-Filter.
+3. **Dashboard** (Vite/React-PWA nach Vorbild Space): **Heute** (Briefing oben, Top-Stories), **Kategorien** (11 Chips), **Briefing**, Story-Karte (Scores, Quellen, Paywall-Hinweis, Zusammenfassung), Sortierung Gesamt/Tragweite/Für mich, **Gelesen/Merken**, Suche in den letzten 72 h, Mindest-Score-Filter (Standard 5). **Übersichtlichkeit:** Heute = Briefing + Top 10, höchstens 5 Tabs unten (Heute · Kategorien · Modelle & Tools · Fristen · Mehr), Gelesenes verschwindet, „Neu seit letztem Besuch“, „Änderungen für mich“ (eigene Tools).
 4. Frische: Daten-JSON per NetworkFirst mit `cache: 'no-cache'`, Warnbanner bei Stand > 24 h, Footer mit Quellen-Credits, Quellen-Health und Claude-Backend (Abo/API/aus).
 
 **Fertig, wenn:** Die Seite läuft 3 Tage ohne Eingriff, ein Server-Neustart verliert keinen Lauf (Nachholen), Handy-Ansicht passt.
@@ -111,7 +111,7 @@ Reihenfolge nach Nutzen; jedes Modul einzeln veröffentlichen.
 2. **Gesetze & Fristen:** Statusmodell, strukturierte Quellen setzen den Status, kuratierte Fristen-Tabelle, Ansicht **Fristen**. → `gesetze-und-fristen`
 3. **Sicherheitslücken:** GHSA-Watchlist in einem Aufruf, NVD-Zeitfenster + Produkt-Regex, KEV/EPSS/MSRC, Gruppierung je Produkt, Severity-Heuristik. → `sicherheitsluecken`
 4. **Modelle & Ranglisten:** OpenRouter-Snapshot-Diff, Arena-Parquet + AA-Index → Anbieter-Watchlist wöchentlich, Alias-Tabelle, „Neue #1"-Erkennung. → `modelle-und-ranglisten`
-5. **Ansicht „Modelle & Tools"** (Wunsch 2026-10-25): Bestenliste je Einsatzzweck (Coding & Agenten, Text, WebDev, Vision, Preis-Leistung, Film/Video, Design, Game-Dev, Automatisierung), Tool-Vergleiche (Coding-Assistenten, Chat-Apps, lokale Modelle, Automatisierung & UIs), Modellerweiterungen als Verlauf je Anbieter; Aktualisierung 3× pro Woche (Mo, Mi, Fr 07:07) inkl. Opus-Urteil „Empfehlung für dich". Details: Steckbrief → `references/entscheidungen.md`.
+5. **Ansicht „Modelle & Tools"** (Wunsch 2026-10-25): Bestenliste je Einsatzzweck (Coding & Agenten, Text, WebDev, Vision, Preis-Leistung, Film/Video, Design, Game-Dev, Automatisierung), Tool-Vergleiche (Coding-Assistenten, Chat-Apps, lokale Modelle, Automatisierung & UIs), Modellerweiterungen als Verlauf je Anbieter, Modell-Steckbrief + Vergleich, „Mein Stack“ mit Trendpfeilen, Preis-Rechner, Filter Open-Weights/EU-Tauglichkeit; Aktualisierung 3× pro Woche (Mo, Mi, Fr 07:07) inkl. Opus-Urteil „Empfehlung für dich". Details: Steckbrief → `references/entscheidungen.md`.
 
 **Skills außerdem:** `quellen` (Register-Einträge aller neuen Quellen), `dashboard-entwickeln` (Ansicht **Fristen**, Liste „Weitere Advisories"), `bewertung` (Sonder-`clusterKey`s und Score-Übernahmen).
 
@@ -119,7 +119,7 @@ Reihenfolge nach Nutzen; jedes Modul einzeln veröffentlichen.
 
 ## Phase 5 – Archiv & Trends
 
-1. Tagesarchiv, Monatsindex, **Archiv-Ansicht mit Suche** (Firma, Modell, Kategorie, Zeitraum).
+1. Themen-Stränge (zusammenhängende Meldungen als Verlauf), Fristen-Leiste auf der Startseite. Tagesarchiv, Monatsindex, **Archiv-Ansicht mit Suche** (Firma, Modell, Kategorie, Zeitraum).
 2. **Firmen-Radar:** Erwähnungswachstum (7 Tage vs. 28 Tage davor), Funding-Ereignisse, neue Orgs in HF-Trending/OpenRouter.
 3. **Anbieter-Radar:** Watchlist-Ansicht mit Rang, Rating-Verlauf, Aufsteigern.
 4. **Wochenrückblick** sonntags mit Opus 5.5 (ersetzt das Abend-Update), eigenes Archiv.
