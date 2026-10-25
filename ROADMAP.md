@@ -159,7 +159,7 @@ Reihenfolge nach Nutzen; jedes Modul einzeln veröffentlichen.
 | Phase 3 | Deploy-Key im Repo eintragen (Schreibrecht) und einen GitHub-Token **ohne** Rechte für API-Lesezugriffe erzeugen |
 | Phase 3 | Entscheidung Impressum/Datenschutzerklärung vor dem Livegang |
 | Phase 6 | Cloudflare-Login für den Worker (Konto existiert) |
-| offen | Code-Lizenz (z. B. MIT) |
+| ~~offen~~ | Code-Lizenz: MIT (2026-10-25) |
 | 2027-10 | Abo-Token erneuern (1 Jahr gültig; das Dashboard warnt 30 Tage vorher) |
 
 ## Risiken

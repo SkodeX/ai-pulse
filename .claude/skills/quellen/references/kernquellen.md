@@ -13,7 +13,7 @@ Takt: `3x` jeder Lauf · `daily07` einmal täglich (07:07, holt nach) · `weekly
 
 | id | URL | Art | Rolle | Takt | Hinweise | Server |
 |---|---|---|---|---|---|---|
-| `heise-ki` | https://www.heise.de/thema/Kuenstliche-Intelligenz.xml | feed | press | 3x | de, aiOnly (~70 % KI); 100 Entries ≈ 9 Tage; Paywall-Marker `heise+` am Titelende; nur Last-Modified | |
+| `heise-ki` | https://www.heise.de/thema/Kuenstliche-Intelligenz.xml | feed | press | 3x | de, aiOnly (~70 % KI); 100 Entries ≈ 9 Tage; Paywall-Marker „heise+ |" am Titel**anfang** (geprüft 2026-10-25); nur Last-Modified | |
 | `golem-ki` | https://rss.golem.de/rss.php?feed=ATOM1.0&ms=ki | feed | press | 3x | de, aiOnly (~78 %); `tp=ki` = 404; `Anzeige:`-Titel verwerfen | |
 | `decoder-de` | https://the-decoder.de/feed/ | feed | press | 3x | de, aiOnly; nur 10 Items → jeden Lauf; ETag + LM | |
 | `techcrunch-ai` | https://techcrunch.com/category/artificial-intelligence/feed/ | feed | press | 3x | Filter (~75 % KI, auch Robotaxi/Events), `categories` mitprüfen; 20 Items; Cloudflare | |

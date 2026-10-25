@@ -40,6 +40,8 @@ Repo öffentlich anlegen und pushen? Lizenz? `.claude/` und `docs/recherche/` mi
 }
 ```
 
+**Installiert am 2026-10-25** (`npm install --before 2026-10-11`, Node 24.20, npm 11.19): `@extractus/feed-extractor` 8.0.3 · `@mozilla/readability` 0.6.0 · `linkedom` 0.18.13 · `normalize-url` **9.0.1** (Range `^9`: 10.0.0 war jünger als 14 Tage) · `p-limit` 7.3.3 · `tldts` 7.4.18 · `zod` 4.6.5 · `typescript` 7.0.2 · `@types/node` 24.19.2. `normalize-url` 10 erst nach eigenem Fixture-Vergleich (`pipeline/test/url.test.ts`) übernehmen – sonst verschieben sich alle `seen`-Keys. `.gitignore` zusätzlich `.claude/settings.local.json`; Lizenz MIT.
+
 Später dazu: `diff` ^9 und `html-to-text` ^10 (Phase 4, AGB), `hyparquet` **1.31.2** fest (Phase 4, Arena), `@anthropic-ai/sdk` (Phase 2, Notfall-Backend – Version mit Skill `claude-api` wählen).
 
 ## `tsconfig.pipeline.json`

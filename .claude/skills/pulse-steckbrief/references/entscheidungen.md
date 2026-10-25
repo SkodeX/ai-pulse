@@ -53,7 +53,7 @@ Ausgelagert aus dem Steckbrief, damit dieser klein bleibt. Hier nachsehen, wenn 
 
 ## Offene Punkte (Entscheidung des Nutzers)
 
-- **Vor Phase 1 Schritt 1** (Auswahlrunde): Repo jetzt öffentlich anlegen und pushen? Lizenz (MIT oder keine)? `.claude/` und `docs/recherche/` mit veröffentlichen (enthalten lokale Pfade, Abo- und Server-Pläne)? Die noreply-Adresse per `gh api user --jq .id` bilden (`<id>+SkodeX@users.noreply.github.com`).
+- ~~Vor Phase 1 Schritt 1~~ **geklärt 2026-10-25:** Repo `SkodeX/ai-pulse` öffentlich angelegt und gepusht, Lizenz **MIT**, `.claude/` und `docs/recherche/` werden **mit veröffentlicht**. Git-Identität `SkodeX <25643926+SkodeX@users.noreply.github.com>`.
 - **Phase 2:** Profil – Interessen/Desinteressen über die fünf Tools hinaus (Agenten, MCP, Coding-Assistenten vs. Gadgets, Krypto …), selbst gehostete Tools (Ollama, Open WebUI, n8n)?
 - **Phase 3:** Server-Hardware (Mini-PC, Pi 5 oder NAS – NAS ohne systemd → Docker-Variante in `job-betrieb`); Backup-Ziel für `~aipulse/.local/share/ai-pulse/` (AGB-Snapshots, nicht wiederbeschaffbar); automatischer Neustart nach Sicherheitsupdates ja/nein; **Impressum/Datenschutzerklärung** vor dem Livegang.
 - **Phase 6:** KV-Jurisdiktion (`--jurisdiction eu` oder keine) – einmalig vor `kv namespace create`.

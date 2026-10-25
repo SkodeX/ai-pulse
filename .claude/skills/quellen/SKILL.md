@@ -5,7 +5,7 @@ description: AI-Pulse-Quellen – Register, Abruf (UA, ETag, Challenge, Fallback
 
 # Quellen
 
-Grundsatz: Jede Quelle steht genau einmal im Register, wird über eine gemeinsame Abruf-Schicht geholt und deterministisch geparst: **Parser → `ParsedEntry` → Vorfilter → `RawItem`** → Clustering (`bewertung`). Eine kaputte oder geblockte Quelle bricht nie den Lauf ab und überschreibt nie gespeicherte Stände – sie wird `degraded`/`blockiert`, die Fallback-Kette springt ein. Alles hier ist **geplant** (Stand 2026-10-24, noch kein Code). Befunde aus `docs/recherche/2026-10-24/katalog/`, gemessen mit curl von einer deutschen Privat-IP; der Job ruft aber mit Node-`fetch` ab, und Cloudflare behandelt beide verschieden (Fallen) → maßgeblich ist `npm run smoke` auf dem Server.
+Grundsatz: Jede Quelle steht genau einmal im Register, wird über eine gemeinsame Abruf-Schicht geholt und deterministisch geparst: **Parser → `ParsedEntry` → Vorfilter → `RawItem`** → Clustering (`bewertung`). Eine kaputte oder geblockte Quelle bricht nie den Lauf ab und überschreibt nie gespeicherte Stände – sie wird `degraded`/`blockiert`, die Fallback-Kette springt ein. **Gebaut in Phase 1 (2026-10-25)** – Ist-Stand und Abweichungen vom Plan in § 12; Befunde aus `docs/recherche/2026-10-24/katalog/`, gemessen mit curl von einer deutschen Privat-IP; der Job ruft aber mit Node-`fetch` ab, und Cloudflare behandelt beide verschieden (Fallen) → maßgeblich ist `npm run smoke` auf dem Server.
 
 **Zuständigkeit:** Register, Abruf, Health, Parser, Vorfilter, `ParsedEntry`/`RawItem`, Trockenlauf-Bericht, Smoke-Test, allgemeine Quellen (Presse, Labs, Startups, Forschung/Open Source). Eigene Listen über dieselbe Abruf-Schicht (ab Phase 4): `sicherheitsluecken`, `gesetze-und-fristen` (`LawHint`), `vertragsaenderungen`, `modelle-und-ranglisten`. Clustering, Vor-Scores, `candidates.json`, Schreiben von `seen.json` → `bewertung`; Server, Timer, Push → `job-betrieb`.
 
@@ -54,7 +54,10 @@ export interface Source {
   fallbackOnly?: boolean        // nur abrufen, wenn eine Primärquelle ausfällt
   lang: 'de' | 'en'
   adapter?: 'techmeme' | 'hn' | 'hfPapers' | 'yc'   // später 'tldr' (nice)
-  html?: { mode: 'sections' | 'links'; container?: string; dateRe?: RegExp; linkRe?: RegExp }
+  html?: { mode: 'sections' | 'links'; container?: string; heading?: string   // CSS-Selektor, Standard 'h2, h3'
+           dateRe?: RegExp; yearFrom?: string  // Selektor der Monatsüberschrift, liefert das Jahr für „Oct 22"
+           linkRe?: RegExp }
+  sitemap?: { lastmod: boolean; urlDateRe?: RegExp }   // lastmod als publishedAt; Datum JJMMTT aus der URL (DeepSeek)
   headers?: Record<string, string>         // z. B. { 'Accept-Language': 'en' }
   maxBytes?: number             // Standard 3 MB
   staleDays?: number            // Frische-Warnung: Standard 14, Wochenquellen 30, langsame Labs 60
@@ -184,7 +187,7 @@ Schritte in dieser Reihenfolge; jeder Verwerfungsgrund wird je Quelle gezählt (
 2. **Altersfenster** (`age`): `publishedAt` älter als 72 h (weekly: 8 Tage).
 3. **Dedupe im Lauf** (`dupe`): nur je `(sourceId, key)`, der erste gewinnt. Dieselbe URL aus verschiedenen Quellen bleibt erhalten (Mehrfachquellen-Signal; zusammengeführt in `pipeline/cluster/`).
 4. **seen** (`seen`): `state/seen.json` (`{ "<key>": { firstSeen, storyId? } }`, TTL 30 Tage, Eigentümer `bewertung`) nur lesen. Treffer ohne `storyId` → verwerfen. Treffer **mit** `storyId` → `seenStoryId` setzen und ohne die Schritte 5–9 weiterreichen; `pipeline/cluster/` hängt die Quelle an die Story oder verwirft sie, ohne Claude (sonst ginge z. B. Techmeme nach dem Lab-Post samt Boost verloren). Was hier oder später rausfällt, prüft der nächste Lauf erneut.
-5. **Sponsor/Anzeige** (`sponsor`): Titel `^Anzeige:` (golem), `(Sponsor)` (TLDR), Autor/Kategorie „MIT Technology Review Insights". **Paywall** → behalten, `paywall: true` (Register-Flag oder Marker; Marker aus dem Titel entfernen, heise `/\s*\|\s*heise\+\s*$/`).
+5. **Sponsor/Anzeige** (`sponsor`): Titel `^Anzeige:` (golem), `(Sponsor)` (TLDR), Autor/Kategorie „MIT Technology Review Insights". **Paywall** → behalten, `paywall: true` (Register-Flag oder Marker; Marker aus dem Titel entfernen, heise steht **am Anfang** „heise+ | …" (geprüft 2026-10-25), Regex `/^\s*heise\+\s*\|\s*|\s*\|\s*heise\+\s*$/i`).
 6. **Keyword-Regex** (`keyword`) nur bei `aiOnly: false`, auf `title` + `categories` + `description` – nie nur Titel (Simon Willison, Zvi). `filter.include` ersetzt `AI_RE`, `filter.exclude` wirkt zusätzlich.
 7. **Releases** (nur `github`): `prerelease`-Flag oder Tag/Name passend zu `/(^|[-.+_\s\d])(rc|alpha|beta|nightly|dev|preview)([-.+_\d\s]|$)/i` (`\d` vorn für vllm `v0.32.0rc3`, PEP 440) → `prerelease`. Dann (`version`): nur Tags der Linie `tagRe`, `(\d+)\.(\d+)` aus dem Tag (Präfixe `v`, `rust-v`, `n8n@`, `langchain-core==`), nur Major-/Minor-Sprung gegenüber dem Schnappschuss, je Repo und Lauf nur die höchste Version.
 8. **Quellenregeln** (`rule`): HN `points > 100` (Show HN > 50), HF Daily Papers `upvotes ≥ 30` (Steckbrief-Standard), YC nur Batches des aktuellen/kommenden Jahres.
@@ -259,7 +262,27 @@ Spezifikation (Felder, `shape` je Quellenart, Urteile, Nenner, Bericht, Auswertu
 - ETag gespeichert, Items aber nicht → 304, Meldungen verloren. Ein Testlauf, der `state/` statt des Schatten-States schreibt → derselbe Effekt im nächsten echten Lauf.
 - Trockenlauf ohne Schatten-`seen.json` → Lauf 2 zeigt das ganze 72-h-Fenster erneut und sprengt die 30–65 Cluster.
 - Quellenspezifische Fallen (Redirect-URLs der alten Liste, 10-Item-Feeds, Gemini Apps auf Deutsch, Olshansk hinkt, Decoder EN = Übersetzung, arXiv) → `references/parser.md`.
+- **GitHub-Schlüssel `@<x.y>` und Dedupe** (gefunden per Test 2026-10-25): Steht `v2.48.1-rc.1` oder ein Tag einer fremden Linie (`langchain-text-splitters==1.8.0`) vor dem stabilen Release derselben Minor-Version, hätte das Dedupe das stabile verworfen → Vorabversion und `tagRe` werden bei GitHub **vor** dem Dedupe geprüft.
+- **Gemini Apps:** `?hl=en` + `Accept-Language: en` lieferte `lang="de-DE"` mit teils deutschen Karten; mit `Accept-Language: en-US,en;q=0.9` kommt Englisch (Register-`headers`). Sprachwechsel würde die Abschnitts-Hashes ändern.
+- **`--only` schreibt keinen Schatten-State:** Ein Test mit `--only` würde sonst ETags speichern, ohne dass `seen` alle Quellen kennt → Lücken im nächsten vollen Trockenlauf.
+- **htmldiff und Clustering:** `canonicalUrl()` entfernt den `#anker` → mehrere neue Abschnitte derselben Seite in einem Lauf landen per URL-Gleichheit in **einem** Cluster (gewollt: „Changelog-Update"); `RawItem.url` behält den Anker.
+- Proben-Skripte: `name=url` nie mit `split('=')` zerlegen (Query-Strings enthalten `=`) – sonst misst man eine abgeschnittene URL (passiert bei golem `?feed=…&ms=ki`).
 
-## Nach dem Bauen
+## 12. Ist-Stand Phase 1 (2026-10-25)
 
-Diesen Skill auf den echten Stand bringen (Dateinamen in `pipeline/collect/`, `pipeline/filter/`, `pipeline/smoke.ts`, Registergröße, tatsächliche Formate von `sources-health.json`, `source-state.json`, `raw-items.json` und `hints`-Codes, festgelegte `container`/`dateRe`/`titleStrip`), Smoke-Ergebnisse vom Server je Kernquelle in `references/kernquellen.md` (Spalte „Server") und die Fallback-Matrix eintragen, `startStatus` nach den Messungen nachziehen, UA-Bestätigung festhalten, neue Fallen mit echtem Symptom ergänzen und den Phasenstand im Steckbrief nachtragen.
+**Dateien:** `pipeline/config/sources.ts` (51 Kern + 4 `fallbackOnly`), `config/keywords.ts` (`AI_RE`, Sponsor-, Prerelease-Regex, `STOP_WORDS`) · `pipeline/collect/http.ts` (Abruf, `HostScheduler`, `detectBlock`, `decodeBody` für ISO-8859-1), `robots.ts`, `health.ts` (`isDue`, `applyAttempt`, Breaker), `collect.ts` (Wellen + Fallback-Ketten), `report.ts`, `parsers/{common,feed,json,sitemap,htmldiff,github}.ts` · `pipeline/filter/prefilter.ts`, `releases.ts` · `pipeline/state.ts` (Schatten-State) · `pipeline/run.ts`, `pipeline/smoke.ts` · Tests `pipeline/test/*.test.ts` + `fixtures/`.
+
+**Abweichungen/Ergänzungen zum Plan:**
+- `AI_RE` um Modellnamen mit direkt folgender Ziffer ergänzt (`(?:qwen|gemma|llama|glm|kimi|grok|deepseek|gemini|claude|phi)\d[-\w.]*`), weil `\bqwen\b` „Qwen3.8-27B" nicht traf.
+- `ParsedEntry.signals` zusätzlich `prerelease` (GitHub REST) und `batch` (YC).
+- `sources-health.json` je Quelle zusätzlich `verdict` (Urteil des letzten Abrufs, für „nicht fällig"), `finalUrlRuns`, `floodRuns` (Zähler für die 3-Läufe-Hinweise).
+- `source-state.json`: `sections` hält höchstens 60 neueste Daten; neue Daten älter als der älteste gespeicherte Abschnitt werden ignoriert.
+- robots.txt auf 1-Request-Hosts (help.openai.com) zählt nicht gegen das 1-Request-Budget, wird aber ≤ 1×/24 h geholt (`http-cache.json` Schlüssel `robots:<host>`, Feld `robots`).
+- Zusätzliche Fehlerklasse `host-budget` (zweiter Request auf einem 1-Request-Host im selben Lauf).
+- `report.md`: Spalte „Hinweise" und darunter die Clusterliste.
+- htmldiff-Titel = erste Zeile mit ≥ 4 Wörtern (Badges wie „Update" bei OpenAI überspringen).
+- Festgelegte Konfiguration: `openai-api-changelog` `container: 'main'`, `heading: 'div[data-variant="outline"]'`, `yearFrom: 'h3'` · `claude-apps-notes` `container: 'article'`, `heading: 'h3'` · `gemini-api-changelog` `container: '.devsite-article-body'`, `heading: 'h2[id]'` · `gemini-apps-notes` `heading: 'h2'`, `dateRe` `JJJJ.MM.TT` · `chatgpt-release-notes` vorläufig wie Claude Apps (Intercom).
+
+**Messung PC (Node-fetch, 2026-10-25):** Trockenlauf und Smoke-Test je 49/51 ok, Fallbacks 4/4; blockiert nur `chatgpt-release-notes` (403 `cf-mitigated`) und `xai-sitemap` (403) – `startStatus` bleibt. Lauf 1 (`--fresh`) 23 s, roh 3241 → gefiltert 154 → 152 Cluster (72-h-Fenster).
+
+**Noch offen:** Smoke-Läufe auf dem Server (Phase 3) → Spalte „Server" in `kernquellen.md`, Fallback-Matrix und `startStatus` nachziehen, UA-Vergleich (`--ua kurz`); `titleStrip` je Feed erst bei Bedarf.
