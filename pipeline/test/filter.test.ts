@@ -59,8 +59,10 @@ describe('Vorfilter', () => {
       entry('golem-ki', { title: 'Anzeige: Sechs IT-Jobs in Datenanalyse' }),
       entry('heise-ki', { title: 'heise+ | Grenzen lokaler KI: Was iPhone und Pixel leisten' }),
       entry('techcrunch-ai', { title: 'AI report', author: 'MIT Technology Review Insights' }),
+      entry('heise-ki', { title: 'heise-Angebot: iX-Workshop: Microsoft 365 Copilot für IT-Administratoren' }),
     ])
     assert.equal(r.drops['golem-ki']?.sponsor, 1)
+    assert.equal(r.drops['heise-ki']?.sponsor, 1)
     assert.equal(r.drops['techcrunch-ai']?.sponsor, 1)
     const heise = r.items.find(i => i.sourceId === 'heise-ki')!
     assert.equal(heise.paywall, true)

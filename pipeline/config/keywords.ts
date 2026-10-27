@@ -4,7 +4,7 @@
 export const AI_RE = new RegExp(String.raw`\b(?:ki|ai|genai|llms?|gpt[-\w.]*|(?:qwen|gemma|llama|glm|kimi|grok|deepseek|gemini|claude|phi)\d[-\w.]*|chatgpt|codex|claude|anthropic|openai|gemini|gemma|deepmind|copilot|cursor|mistral|deepseek|qwen|llama|grok|xai|kimi|glm|zhipu|minimax|perplexity|hugging ?face|nvidia|mcp|agentic|(?:coding|software)[- ]agents?|chatbots?|prompt[- ]injection|inferen(?:ce|z)|sprachmodell\w*|(?:large )?language models?|foundation models?|machine learning|maschinelles lernen|deep learning|neural networks?|neuronale\w* netz\w*|künstliche[nr]? intelligenz|artificial intelligence|diffusion models?)\b`, 'i')
 
 // Sponsor/Anzeige: Titel und Autor/Kategorie
-export const SPONSOR_TITLE_RE = /^\s*Anzeige:|\(Sponsor(?:ed)?\)/i
+export const SPONSOR_TITLE_RE = /^\s*(?:Anzeige|heise-Angebot):|\(Sponsor(?:ed)?\)/i
 export const SPONSOR_META_RE = /MIT Technology Review Insights/i
 
 // Vorabversionen (PEP 440: \d vorn für vllm v0.32.0rc3)
