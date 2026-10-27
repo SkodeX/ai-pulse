@@ -50,11 +50,14 @@ export async function runTriage(runner: LlmRunner, clusters: Cluster[], ctx: str
   const queue: Cluster[][] = []
   for (let i = 0; i < clusters.length; i += LIMITS.triageBatch) queue.push(clusters.slice(i, i + LIMITS.triageBatch))
   let halved = false
+  // Schlüssel früherer Pakete dieses Laufs: hinter dem byte-gleichen Kontextblock, damit dasselbe Ereignis paketübergreifend einen Schlüssel bekommt
+  const runKeys = new Map<string, string>()
   while (queue.length > 0) {
     const batch = queue.shift()!
     if (!runner.canStart('triage', true)) break
     const refs = batch.map((_, i) => `k${String(i + 1).padStart(2, '0')}`)
-    const input = `${ctx}\n<kandidaten>\n${batch.map((c, i) => candidateBlock(refs[i]!, c, c.sources[0]?.name ?? c.primary.sourceId)).join('\n')}\n</kandidaten>\nBewerte alle ${batch.length} Kandidaten.`
+    const earlier = runKeys.size ? `\n<kontext-lauf>\nIn diesem Lauf bereits vergeben (clusterKey | Titel):\n${[...runKeys].map(([k, t]) => `${k} | ${foreign(t)}`).join('\n')}\n</kontext-lauf>` : ''
+    const input = `${ctx}${earlier}\n<kandidaten>\n${batch.map((c, i) => candidateBlock(refs[i]!, c, c.sources[0]?.name ?? c.primary.sourceId)).join('\n')}\n</kandidaten>\nBewerte alle ${batch.length} Kandidaten.`
     const res = await runner.call({ stage: 'triage', system: prompt.text, systemFile: prompt.file, input, schemaJson, model: cfg.model, effort: cfg.effort, timeoutMs: cfg.timeoutMs, maxTokens: cfg.apiMaxTokens(batch.length) }, refs)
     if (!res.ok) {
       if ((res.error === 'schema' || res.error === 'refusal' || res.error === 'timeout') && !halved && batch.length > 1) {
@@ -74,6 +77,7 @@ export async function runTriage(runner: LlmRunner, clusters: Cluster[], ctx: str
       if (idx < 0 || seen.has(item.ref)) continue   // unbekannt oder doppelt → erstes zählt
       seen.add(item.ref)
       out.set(batch[idx]!, { ...item, model: res.model })
+      if (item.relevant && !runKeys.has(item.clusterKey)) runKeys.set(item.clusterKey, item.titleDe)
     }
   }
   return out

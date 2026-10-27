@@ -131,3 +131,9 @@ Gemessene Fehlerformen (Exit-Codes, JSON-Felder bei Limit/Auth), Token pro Aufru
 - Kein `claude` im PATH; die Desktop-App bringt eigene Binärdateien mit (`%LOCALAPPDATA%\Claude-Data\<…>\claude-code\<version>\<hash>\claude.exe`, Version 2.1.308). Für Skripte `AIPULSE_CLAUDE_BIN` darauf setzen.
 - Dieses Binary ist **standalone nicht angemeldet** (`claude auth status` → `loggedIn: false`, `authMethod: none`): Die Desktop-App reicht ihren Login nur an eigene Sitzungen durch (`ANTHROPIC_BASE_URL`, Host-Auth), und `cleanEnv()` lässt das ohnehin nicht durch. Für lokale Testläufe einmal `claude.exe auth login` (Nutzer, Browser).
 - `--help` 2.1.308 bestätigt `--safe-mode`, `--bare`, `--tools`, `--json-schema`, `--effort`, `--no-session-persistence`, `--output-format`; `--system-prompt-file` erscheint nur im Hilfetext von `--safe-mode`/`--bare` („--system-prompt[-file]"), existiert also.
+
+## Gemessen (2026-10-27, Windows, claude-code 2.1.308, Abo-Login `authMethod: "claude.ai"`)
+
+- `claude auth status` vor dem Login: `loggedIn: false`, `authMethod: "none"` → `authStatus()` lehnt ab. Nach `claude.exe auth login` (Desktop-Binary unter `%LOCALAPPDATA%\Claude-Data\…\claude-code\<version>\<hash>\claude.exe`, nicht im PATH → `AIPULSE_CLAUDE_BIN` setzen) läuft `-p` über das Abo.
+- Teillauf `--limit 80` (113 neu → 80 an Claude): **8 CLI-Aufrufe**, 363 s. Triage 4× Haiku (zus. 51 k in / 45 k out), Summarize 3× Haiku (33 k / 30 k; Sicherheit als eigenes Paket), Briefing 1× Opus (6,6 k / 3,1 k). Alle ok, `structured_output` immer vorhanden.
+- Einzelaufruf Triage mit 5 Kandidaten: 6,6 k in / 3,5 k out, `total_cost_usd` 0,0031 (Schätzung).

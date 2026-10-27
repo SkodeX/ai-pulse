@@ -175,6 +175,9 @@ describe('Story-Bau', () => {
     const r2 = mergeByKey([a], new Map([['k-e-y', basis]]))
     assert.equal(r2.stories.length, 0)
     assert.equal(r2.attached[0]!.id, 'alt')
+    const c = story({ id: 'x2', clusterKey: 'openai-gpt-61-terra-release' })
+    const d = story({ id: 'x3', clusterKey: 'openai-gpt-6-1-terra-release', sources: [{ id: 'decoder-de', name: 'Decoder', url: 'u2', lang: 'de' }] })
+    assert.equal(mergeByKey([c, d], new Map()).stories.length, 1)
   })
 
   test('Abgleich-Basis per URL', () => {

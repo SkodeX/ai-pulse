@@ -90,21 +90,27 @@ export function buildStory(c: Cluster, pre: number, triage: TriageItem | undefin
 }
 
 // 1b: gleicher clusterKey → eine Story (Maximum der Scores, Quellen vereinigt; ältere/bestehende id gewinnt).
+// Schlüssel nur bis auf Bindestriche vergleichen: openai-gpt-61-terra-release = openai-gpt-6-1-terra-release
+export const keyNorm = (k: string): string => k.replace(/-/g, '')
+
 export function mergeByKey(stories: Story[], basisByKey: Map<string, Story>): { stories: Story[]; attached: Story[] } {
   const byKey = new Map<string, Story>()
+  const basis = new Map<string, Story>()
+  for (const [k, s] of basisByKey) if (!basis.has(keyNorm(k))) basis.set(keyNorm(k), s)
   const attached: Story[] = []
   for (const s of stories) {
-    const existing = basisByKey.get(s.clusterKey)
+    const key = keyNorm(s.clusterKey)
+    const existing = basis.get(key)
     if (existing && existing.id !== s.id) {
       attached.push({ ...existing, sources: mergeSources(existing.sources, s.sources) })
       continue
     }
-    const prev = byKey.get(s.clusterKey)
-    if (!prev) { byKey.set(s.clusterKey, s); continue }
+    const prev = byKey.get(key)
+    if (!prev) { byKey.set(key, s); continue }
     const impact = Math.max(prev.impact, s.impact)
     const personal = Math.max(prev.personal, s.personal)
     const first = prev.firstSeen <= s.firstSeen ? prev : s
-    byKey.set(s.clusterKey, { ...first, sources: mergeSources(first.sources, (first === prev ? s : prev).sources), impact, personal, score: storyScore(impact, personal) })
+    byKey.set(key, { ...first, sources: mergeSources(first.sources, (first === prev ? s : prev).sources), impact, personal, score: storyScore(impact, personal) })
   }
   return { stories: [...byKey.values()], attached }
 }
