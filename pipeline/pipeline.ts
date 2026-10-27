@@ -110,7 +110,7 @@ export async function runPipeline(opts: PipelineOptions): Promise<void> {
     const sum = summaries.get(s.id)
     const withSum = sum ? applySummary(s, sum) : s
     const c = clusterOf.get(s.id)
-    return withEntities(c ? applyBoost(withSum, c) : withSum, c?.primary.teaser)
+    return withEntities(c ? applyBoost(withSum, c) : withSum)
   })
   for (const [id, s] of changed) changed.set(id, s.providers ? s : withEntities(s))
 

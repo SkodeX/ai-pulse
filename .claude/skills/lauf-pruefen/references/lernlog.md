@@ -2,6 +2,12 @@
 
 Neueste Einträge oben. Je Eintrag: Lauf, Kennzahlen, Befunde nach Art (A klein · B Bewertung/Prompt · C Struktur · D Check), Maßnahmen.
 
+## 2026-10-27 · Umsetzung der B-Vorschläge (vom Nutzer freigegeben)
+
+- `feldregeln.txt`: `providers` = handelnde Firma, nicht angebundene/erwähnte Werkzeuge (mit zwei Beispielen); `models` analog. `clusterKey`: Folgemeldungen zu einem Release der letzten 72 h (Verfügbarkeit in weiteren Produkten, Rollout, Einordnung, erste Tests) übernehmen den Release-Schlüssel; eigener Schlüssel nur bei neuem Ereignis.
+- `withEntities`: Hat Claude `providers` geliefert, gelten nur diese (ohne Anbieter, aber mit Modell → Anbieter des Modells); Regel-Erkennung nur noch auf den Titeln, nicht auf Teaser/Zusammenfassung.
+- Probe `--stage triage --limit 20` (1 Aufruf, Lauf 1010): Copilot-Terra → `openai-gpt-6-1-terra-release` ✓, 4× Anthropic-S-1 → ein Schlüssel ✓, Greptile nur „Greptile“ ✓, Hob ohne Anbieter ✓. Beobachten: Release `openai-python v3.39.0` landete ebenfalls im Terra-Schlüssel – SDK-Releases sind eigene Ereignisse, falls das wieder vorkommt (dann Art B).
+
 ## 2026-10-27 · 2026-10-27-1001-morning (zweiter echter Lauf, `--limit 80`, Basis = Lauf 0927)
 
 `stories 154 · claude 82 · regel 72 · zusammenfassungen 47 · duplikate 9 · duplikateNeu 5 · aufrufe 6 · tokenIn 80582 · tokenOut 58835 · quellenOk 96 % · allgemein 24 %`

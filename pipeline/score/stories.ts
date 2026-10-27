@@ -133,16 +133,20 @@ export function applyBoost(s: Story, c: Pick<Cluster, 'signals'>): Story {
 
 // Anbieter-/Modell-Tags aus Titel, Originaltitel, Teaser, Zusammenfassung und Tags (auch für Regel-Stories)
 // Regel-Erkennung ∪ Claude-Angaben (Claude zuerst, ohne Dubletten); kein Anbieter → offizielle Primärquelle
-export function withEntities(s: Story, teaser = ''): Story {
-  const rule = detectEntities([s.originalTitle, s.title, teaser, s.summary ?? ''].join(' \n '), s.tags)
+// Anbieter = handelnde Firma (Wunsch 2026-10-27): Hat Claude providers/models geliefert, gelten nur diese (normalisiert);
+// sonst Regel-Erkennung nur auf den Titeln – Teaser und Zusammenfassung nennen oft bloß angebundene Werkzeuge.
+export function withEntities(s: Story): Story {
   const merge = (a: string[], b: string[]) => {
     const out: string[] = []
     for (const x of [...a, ...b]) if (!out.some(y => y.toLowerCase().replace(/[\s-]+/g, '') === x.toLowerCase().replace(/[\s-]+/g, ''))) out.push(x)
     return out.slice(0, 4)
   }
-  // Claude-Namen auf die Schreibweise der Regel-Erkennung bringen („openai" → „OpenAI")
+  const fromClaude = s.providers !== undefined
+  const rule = fromClaude ? { providers: [] as string[], models: [] as string[] } : detectEntities([s.originalTitle, s.title].join(' \n '), s.tags)
+  // Claude-Namen auf die Schreibweise der Regel-Erkennung bringen („openai" → „OpenAI"); ohne Anbieter, aber mit Modell → Anbieter des Modells
   const claudeProviders = (s.providers ?? []).map(p => detectEntities(p).providers[0] ?? p)
-  let providers = merge(claudeProviders, rule.providers)
+  const modelProviders = fromClaude && claudeProviders.length === 0 ? detectEntities((s.models ?? []).join(' \n ')).providers : []
+  let providers = merge(claudeProviders, [...modelProviders, ...rule.providers])
   if (providers.length === 0) {
     const fallback = sourceProvider(s.sources[0]?.id ?? '')
     if (fallback) providers = [fallback]

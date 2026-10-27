@@ -37,3 +37,15 @@ test('Rückfall auf die offizielle Quelle und Merge mit Claude-Angaben', () => {
   const general = withEntities(story({ originalTitle: 'USA und China bauen KI-Imperien auf' }))
   assert.deepEqual(general.providers, [])
 })
+
+test('Anbieter = Akteur: Claude-Angaben gelten allein, Regel nur auf den Titeln', () => {
+  // Claude: Startup ist Akteur, Claude Code/Codex nur angebunden → keine Ergänzung aus dem Titel
+  const tool = withEntities(story({ originalTitle: 'PulseDev: click a UI element, Claude Code or Codex edits it', providers: ['PulseDev'], models: [] }))
+  assert.deepEqual(tool.providers, ['PulseDev'])
+  assert.deepEqual(tool.models, [])
+  // Claude ohne Anbieter, aber mit Modell → Anbieter des Modells
+  assert.deepEqual(withEntities(story({ originalTitle: 'x', providers: [], models: ['GPT-6.1 Terra'] })).providers, ['OpenAI'])
+  // Regel-Story: Zusammenfassung mit erwähnten Werkzeugen zählt nicht
+  const regel = withEntities(story({ originalTitle: 'Show HN: ManyAgents orchestrates coding agents', summary: 'Works with Claude Code and Codex.' }))
+  assert.deepEqual(regel.providers, [])
+})
