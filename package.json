@@ -15,6 +15,7 @@
     "collect": "node pipeline/run.ts --stage collect",
     "smoke": "node pipeline/smoke.ts",
     "pipeline": "node pipeline/run.ts",
+    "check": "node pipeline/check.ts",
     "test": "node --test \"pipeline/test/**/*.test.ts\" \"src/**/*.test.ts\"",
     "typecheck": "tsc --noEmit -p tsconfig.app.json && tsc --noEmit -p tsconfig.test.json && tsc --noEmit -p tsconfig.pipeline.json"
   },

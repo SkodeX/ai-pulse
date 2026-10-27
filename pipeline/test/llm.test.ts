@@ -178,6 +178,14 @@ describe('Story-Bau', () => {
     const c = story({ id: 'x2', clusterKey: 'openai-gpt-61-terra-release' })
     const d = story({ id: 'x3', clusterKey: 'openai-gpt-6-1-terra-release', sources: [{ id: 'decoder-de', name: 'Decoder', url: 'u2', lang: 'de' }] })
     assert.equal(mergeByKey([c, d], new Map()).stories.length, 1)
+    // gleiche id wie die Basis-Story (gleicher Schlüssel) → anhängen, nicht überschreiben (Lauf 2026-10-27: 8 Quellen → 1)
+    const old = story({ id: 'same', clusterKey: 'anthropic-ipo-s1-filing', title: 'Alt', firstSeen: '2026-10-27T08:27:00Z', sources: [{ id: 'hn', name: 'HN', url: 'a', lang: 'en' }, { id: 'heise-ki', name: 'heise', url: 'b', lang: 'de' }] })
+    const neu = story({ id: 'same', clusterKey: 'anthropic-ipo-s1-filing', title: 'Neu', firstSeen: '2026-10-27T09:01:00Z', sources: [{ id: 'verge-ai', name: 'Verge', url: 'c', lang: 'en' }] })
+    const r3 = mergeByKey([neu], new Map([[old.clusterKey, old]]))
+    assert.equal(r3.stories.length, 0)
+    assert.equal(r3.attached[0]!.title, 'Alt')
+    assert.equal(r3.attached[0]!.firstSeen, '2026-10-27T08:27:00Z')
+    assert.equal(r3.attached[0]!.sources.length, 3)
   })
 
   test('Abgleich-Basis per URL', () => {

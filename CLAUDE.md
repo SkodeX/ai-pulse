@@ -21,6 +21,7 @@
 | Dashboard-Ansichten, PWA, Datenladen, Gelesen/Merken | `dashboard-entwickeln` |
 | 👍/👎-Feedback, Cloudflare Worker + KV | `feedback-worker` |
 | Lokal prüfen ohne API-Kosten, Browser-Pane | `sparsam-testen` |
+| Nach jedem Lauf: Ergebnis prüfen, kleine Fehler beheben, Check und Lernlog verbessern | `lauf-pruefen` |
 | Shell-Befehle unter Windows | `windows-shell-fallen` |
 
 ## Sparsam arbeiten

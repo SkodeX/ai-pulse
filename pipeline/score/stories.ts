@@ -101,7 +101,8 @@ export function mergeByKey(stories: Story[], basisByKey: Map<string, Story>): { 
   for (const s of stories) {
     const key = keyNorm(s.clusterKey)
     const existing = basis.get(key)
-    if (existing && existing.id !== s.id) {
+    // auch bei gleicher id (sha1 desselben Schlüssels): bestehende Story behält firstSeen, Texte und Quellen, sonst würde sie überschrieben
+    if (existing) {
       attached.push({ ...existing, sources: mergeSources(existing.sources, s.sources) })
       continue
     }
