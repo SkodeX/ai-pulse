@@ -13,6 +13,7 @@ const ORDER: Record<Exclude<Stage, 'weekly' | 'terms'>, string[]> = {
   triage: ['persona', 'triage', 'kategorien', 'rubriken', 'feldregeln', 'injection'],
   summarize: ['persona', 'summarize', 'rubriken', 'injection'],
   brief: ['persona', 'brief', 'injection'],
+  usecases: ['persona', 'usecases', 'injection'],
 }
 
 export function systemPrompt(stage: keyof typeof ORDER): string {

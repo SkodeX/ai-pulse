@@ -16,7 +16,7 @@ export const GITHUB_LISTS: ListDef[] = [
   { id: 'mcp', title: 'MCP-Server', hint: 'Beliebte und neue Model-Context-Protocol-Server', queries: ['topic:mcp-server', 'topic:model-context-protocol'] },
 ]
 
-const BAD = /uncensored|nsfw|nude|porn|undress|deepnude|jailbreak/i
+const BAD = /uncensored|nsfw|nude|porn|undress|deepnude|jailbreak|abliterat|\d*eros\b|erotic|hentai|waifu|wank/i
 const DAY = 86400e3
 
 function dateMinus(now: Date, days: number): string {
@@ -61,6 +61,30 @@ export function rankItems(items: TopListItem[], history: StarHistory, now: Date,
   return top.map(i => (rising.has(i.id) ? { ...i, rising: true } : i))
 }
 
+// HF-Modelle haben keine Beschreibung, nur pipeline_tag → deutscher Satz nach Regel statt Claude
+const HF_TASKS: Record<string, string> = {
+  'text-generation': 'Sprachmodell für Text und Chat',
+  'image-text-to-text': 'Multimodales Modell, versteht Bilder und Text',
+  'any-to-any': 'Multimodales Modell für Text, Bild und Ton',
+  'text-to-image': 'Bildgenerierung aus Text',
+  'image-to-image': 'Bildbearbeitung per Modell',
+  'text-to-video': 'Videogenerierung aus Text',
+  'image-to-video': 'Videos aus Bildern erzeugen',
+  'text-to-speech': 'Sprachausgabe (Text zu Sprache)',
+  'automatic-speech-recognition': 'Spracherkennung (Sprache zu Text)',
+  'feature-extraction': 'Embedding-Modell für Suche und RAG',
+  'sentence-similarity': 'Embedding-Modell für Suche und RAG',
+  'text-ranking': 'Reranker für Suche und RAG',
+}
+
+export function hfModelUseCase(id: string, task: string | undefined): string | undefined {
+  const what = task ? HF_TASKS[task] : undefined
+  if (!what) return undefined
+  const org = id.split('/')[0] ?? ''
+  const size = /(?:^|[-_.])(\d+(?:\.\d+)?)[bB](?:$|[-_.])/.exec(id.split('/')[1] ?? '')?.[1]
+  return `${what} · offene Gewichte von ${org}${size ? ` · ${size.replace('.', ',')} Mrd. Parameter` : ''}`
+}
+
 export async function huggingFaceList(now: Date): Promise<{ list?: TopList; error?: string }> {
   const get = async (kind: 'models' | 'spaces') => {
     const res = await httpFetch({ url: `https://huggingface.co/api/${kind}?sort=trendingScore&limit=80`, accept: ACCEPT_JSON, retry: false })
@@ -70,7 +94,7 @@ export async function huggingFaceList(now: Date): Promise<{ list?: TopList; erro
   try {
     const [models, spaces] = await Promise.all([get('models'), get('spaces')])
     const ok = (x: Record<string, unknown>) => !BAD.test(String(x['id'])) && !((x['tags'] as string[] | undefined) ?? []).some(t => BAD.test(t))
-    const m = models.filter(ok).slice(0, 35).map(x => ({ id: `hf:${x['id']}`, name: String(x['id']), url: `https://huggingface.co/${x['id']}`, description: [x['pipeline_tag'], x['library_name']].filter(Boolean).join(' · '), stars: Number(x['likes'] ?? 0), growth7d: null, updatedAt: String(x['createdAt'] ?? ''), kind: 'model' as const, topics: [] }))
+    const m = models.filter(ok).slice(0, 35).map(x => ({ id: `hf:${x['id']}`, name: String(x['id']), url: `https://huggingface.co/${x['id']}`, description: [x['pipeline_tag'], x['library_name']].filter(Boolean).join(' · '), useCase: hfModelUseCase(String(x['id']), x['pipeline_tag'] as string | undefined), stars: Number(x['likes'] ?? 0), growth7d: null, updatedAt: String(x['createdAt'] ?? ''), kind: 'model' as const, topics: [] }))
     const s = spaces.filter(x => ok(x) && Number(x['likes'] ?? 0) >= 50).slice(0, 15).map(x => ({ id: `hfs:${x['id']}`, name: String(x['id']), url: `https://huggingface.co/spaces/${x['id']}`, description: `Space · ${x['sdk'] ?? ''}`.trim(), stars: Number(x['likes'] ?? 0), growth7d: null, updatedAt: String(x['createdAt'] ?? ''), kind: 'space' as const, topics: [] }))
     return { list: { id: 'hf', title: 'Hugging Face (Trending)', hint: 'Trend-Modelle und Spaces der Woche; Zahl = Likes', unit: 'Likes', items: [...m, ...s] } }
   } catch (err) {

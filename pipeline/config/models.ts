@@ -1,6 +1,6 @@
 // Modelle, Backends, Grenzen und Timeouts – nur hier (Skill bewertung, Abschnitt „Aufrufe je Stufe").
 
-export type Stage = 'triage' | 'summarize' | 'brief' | 'weekly' | 'terms'
+export type Stage = 'triage' | 'summarize' | 'brief' | 'weekly' | 'terms' | 'usecases'
 export type Backend = 'abo' | 'api'
 export type Effort = 'low' | 'medium' | 'high'
 
@@ -17,6 +17,7 @@ export const STAGES: Record<Stage, StageConfig> = {
   terms: { model: 'claude-opus-5-5', effort: 'medium', timeoutMs: 300_000, apiMaxTokens: n => 700 * n + 200 },
   brief: { model: 'claude-opus-5-5', effort: 'medium', timeoutMs: 300_000, apiMaxTokens: () => 2500 },
   weekly: { model: 'claude-opus-5-5', effort: 'high', timeoutMs: 600_000, apiMaxTokens: () => 3000 },
+  usecases: { model: 'claude-haiku-5-5', effort: 'low', timeoutMs: 240_000, apiMaxTokens: n => 80 * n + 200 },   // Top-50, wöchentlich
 }
 
 export const LIMITS = {
@@ -25,6 +26,8 @@ export const LIMITS = {
   summarizeMax: 25,
   summarizeBatch: 13,
   termsMax: 3,
+  usecasesBatch: 100,     // Top-50-Einträge je Aufruf (nur neue ohne Text)
+  usecasesMaxCalls: 2,
   maxCliCalls: 8,         // ein Zähler über alle Stufen inkl. Wiederholungen
   maxInputChars: 60_000,  // ≈ 20 000 Token
   articleChars: 3_600,    // Artikelauszug ≈ 1 200 Token

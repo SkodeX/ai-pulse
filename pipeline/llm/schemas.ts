@@ -41,6 +41,10 @@ export const SummaryOut = z.object({
   })),
 })
 
+export const UseCaseOut = z.object({
+  items: z.array(z.object({ ref: z.string(), useCase: z.string() })),
+})
+
 export const BriefingOut = z.object({
   title: z.string(),
   intro: z.string(),

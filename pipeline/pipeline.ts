@@ -2,7 +2,7 @@
 // Voller Lauf (nur Server) schreibt public/data/ + state/; --limit schreibt nach .cache/run/<runId>/.
 
 import { join } from 'node:path'
-import type { Briefing, BriefingIndexEntry, FristenFile, Meta, RunKind, Story } from '../shared/types.ts'
+import type { Briefing, BriefingIndexEntry, FristenFile, Meta, RunKind, Story, TopListsFile } from '../shared/types.ts'
 import { buildFristen } from './law/build-fristen.ts'
 import { CURATED_FRISTEN } from './law/fristen.ts'
 import { SOURCES } from './config/sources.ts'
@@ -23,6 +23,8 @@ import { clusterItems } from './cluster/cluster.ts'
 import { loadModelsState, runModels, saveModelsState } from './models/detect.ts'
 import type { StarHistory } from './toplists/toplists.ts'
 import { buildTopLists, toplistsDue } from './toplists/toplists.ts'
+import { applyUseCases, runUseCases } from './llm/usecases.ts'
+import type { UseCaseCache } from './llm/usecases.ts'
 import { CACHE_DIR, ROOT, STATE_DIR, loadState, saveState } from './state.ts'
 import type { Cluster } from './types.ts'
 
@@ -125,6 +127,32 @@ export async function runPipeline(opts: PipelineOptions): Promise<void> {
   const fristen = (await readJson<FristenFile | undefined>(join(PUBLIC_DATA, 'fristen.json'), undefined))?.items ?? CURATED_FRISTEN
   const briefing: Briefing = await runBrief(runner, pool, kind, now, fristen, CACHE_DIR)
 
+  // Top-50-Listen wöchentlich (nur voller Lauf; dauert wegen gestaffelter GitHub-Suche ~1 min).
+  // Use-Case-Texte nach dem Briefing mit den übrigen Aufruf-Plätzen; fehlende holt jeder volle Lauf nach.
+  let toplists: TopListsFile | undefined
+  if (opts.full) {
+    const tlState = await readJson<{ lastBuild?: string }>(join(STATE_DIR, 'leaderboards', 'toplists-build.json'), {})
+    if (toplistsDue(tlState.lastBuild, now)) {
+      const history = await readJson<StarHistory>(join(STATE_DIR, 'leaderboards', 'toplists-history.json'), { snapshots: [] })
+      const tl = await buildTopLists(history, now, process.env['AIPULSE_GITHUB_TOKEN'] || undefined)
+      for (const e of tl.errors) say(`Top-Listen: ${e}`)
+      if (tl.file.lists.length > 0) {
+        toplists = tl.file
+        await writeJson(join(STATE_DIR, 'leaderboards', 'toplists-history.json'), tl.history, 0)
+        await writeJson(join(STATE_DIR, 'leaderboards', 'toplists-build.json'), { lastBuild: now.toISOString() })
+      }
+    }
+    toplists ??= await readJson<TopListsFile | undefined>(join(PUBLIC_DATA, 'toplists.json'), undefined)
+    if (toplists) {
+      const ucFile = join(STATE_DIR, 'leaderboards', 'usecases.json')
+      const cache = await readJson<UseCaseCache>(ucFile, {})
+      const { missing } = applyUseCases(toplists, cache)
+      const fresh = await runUseCases(runner, missing, CACHE_DIR)
+      if (Object.keys(fresh).length) await writeJson(ucFile, { ...cache, ...fresh }, 0)
+      toplists = applyUseCases(toplists, { ...cache, ...fresh }).file
+    }
+  }
+
   // 4: Ausgabe
   const usage = await runner.finish()
   const notices: Meta['notices'] = [...sourceNotices(col.result.state.health, now)]
@@ -140,21 +168,8 @@ export async function runPipeline(opts: PipelineOptions): Promise<void> {
   await writeJson(join(outRoot, 'fristen.json'), fristenFile, 0)
   if (models.modelsFile) await writeJson(join(outRoot, 'models.json'), models.modelsFile, 0)
   if (models.watchlist) await writeJson(join(outRoot, 'watchlist.json'), models.watchlist, 0)
+  if (toplists) await writeJson(join(outRoot, 'toplists.json'), toplists, 0)
 
-  // Top-50-Listen wöchentlich (nur voller Lauf; dauert wegen gestaffelter GitHub-Suche ~1 min)
-  if (opts.full) {
-    const tlState = await readJson<{ lastBuild?: string }>(join(STATE_DIR, 'leaderboards', 'toplists-build.json'), {})
-    if (toplistsDue(tlState.lastBuild, now)) {
-      const history = await readJson<StarHistory>(join(STATE_DIR, 'leaderboards', 'toplists-history.json'), { snapshots: [] })
-      const tl = await buildTopLists(history, now, process.env['AIPULSE_GITHUB_TOKEN'] || undefined)
-      for (const e of tl.errors) say(`Top-Listen: ${e}`)
-      if (tl.file.lists.length > 0) {
-        await writeJson(join(outRoot, 'toplists.json'), tl.file, 0)
-        await writeJson(join(STATE_DIR, 'leaderboards', 'toplists-history.json'), tl.history, 0)
-        await writeJson(join(STATE_DIR, 'leaderboards', 'toplists-build.json'), { lastBuild: now.toISOString() })
-      }
-    }
-  }
 
   // state/ nur im vollen Lauf, nach public/data/
   if (opts.full) {

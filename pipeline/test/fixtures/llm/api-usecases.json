@@ -1,0 +1,7 @@
+{
+  "data": { "items": [
+    { "ref": "p001", "useCase": "Lokale Sprachmodelle per Kommandozeile starten und als API bereitstellen" },
+    { "ref": "p002", "useCase": "Zweck aus der Beschreibung nicht erkennbar" }
+  ] },
+  "usage": { "input_tokens": 900, "output_tokens": 120 }
+}

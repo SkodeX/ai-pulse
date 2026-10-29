@@ -22,6 +22,8 @@ import { collectStage } from './stages.ts'
 import { loadModelsState, runModels } from './models/detect.ts'
 import type { StarHistory } from './toplists/toplists.ts'
 import { buildTopLists } from './toplists/toplists.ts'
+import { applyUseCases, runUseCases } from './llm/usecases.ts'
+import type { UseCaseCache } from './llm/usecases.ts'
 import { CACHE_DIR, SHADOW_DIR, STATE_DIR, loadState, prepareShadow, saveState } from './state.ts'
 import type { Cluster } from './types.ts'
 
@@ -154,9 +156,20 @@ async function stageToplists(): Promise<void> {
   const history = await readJson<StarHistory>(join(STATE_DIR, 'leaderboards', 'toplists-history.json'), { snapshots: [] })
   const r = await buildTopLists(history, now, process.env['AIPULSE_GITHUB_TOKEN'] || undefined)
   const dir = join(CACHE_DIR, 'run', id)
-  await writeJson(join(dir, 'toplists.json'), r.file, 0)
+  // Use-Case-Texte: Cache aus state/ (nur lesen) + .cache/, fehlende mit Haiku (≤ 2 Aufrufe); Teillauf schreibt nur .cache/usecases.json
+  const ucCache = join(CACHE_DIR, 'usecases.json')
+  const cache: UseCaseCache = { ...await readJson<UseCaseCache>(join(STATE_DIR, 'leaderboards', 'usecases.json'), {}), ...await readJson<UseCaseCache>(ucCache, {}) }
+  const { missing } = applyUseCases(r.file, cache)
+  const runner = new LlmRunner({ runId: id, kind: runKindFor(now), full: false, usageDir: join(CACHE_DIR, 'usage'), start: now })
+  const fresh = await runUseCases(runner, missing, CACHE_DIR)
+  await runner.finish()
+  if (Object.keys(fresh).length) await writeJson(ucCache, { ...cache, ...fresh }, 0)
+  const file = applyUseCases(r.file, { ...cache, ...fresh }).file
+  await writeJson(join(dir, 'toplists.json'), file, 0)
+  console.log(`Use-Cases: ${Object.keys(fresh).length} neu von ${missing.length} fehlenden · CLI ${runner.cliCalls} · Backend ${runner.level}`)
+  for (const e of runner.errors) console.log(`  Fehler: ${e}`)
   console.log(`Top-Listen ${id}: ${r.file.lists.map(l => `${l.title} ${l.items.length}`).join(' · ')} · Ausgabe ${dir}`)
-  for (const l of r.file.lists) console.log(`  ${l.title}: ${l.items.slice(0, 4).map(i => `${i.name} (${i.stars})`).join(' · ')}`)
+  for (const l of file.lists) console.log(`  ${l.title}: ${l.items.slice(0, 3).map(i => `${i.name} – ${i.useCase ?? '?'}`).join(' · ')}`)
   for (const e of r.errors) console.log(`  Fehler: ${e}`)
 }
 
