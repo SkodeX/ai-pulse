@@ -1,4 +1,4 @@
-import { CalendarClock, ClockAlert, Cpu, LayoutGrid, Menu, Sun, TriangleAlert } from 'lucide-react';
+import { ClockAlert, Cpu, LayoutGrid, Menu, Sun, Trophy, TriangleAlert } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import type { Meta } from '../../shared/types.ts';
 import { absTime } from '../lib/format.ts';
@@ -47,8 +47,8 @@ const NAV = [
   { href: '#/heute', match: ['/heute', '/', '/briefing'], label: 'Heute', Icon: Sun },
   { href: '#/kategorien', match: ['/kategorien', '/kategorie'], label: 'Kategorien', Icon: LayoutGrid },
   { href: '#/modelle', match: ['/modelle'], label: 'Modelle', Icon: Cpu },
-  { href: '#/fristen', match: ['/fristen'], label: 'Fristen', Icon: CalendarClock },
-  { href: '#/mehr', match: ['/mehr', '/gemerkt', '/einstellungen', '/top'], label: 'Mehr', Icon: Menu },
+  { href: '#/top', match: ['/top'], label: 'Top 50', Icon: Trophy },
+  { href: '#/mehr', match: ['/mehr', '/gemerkt', '/einstellungen', '/fristen'], label: 'Mehr', Icon: Menu },
 ];
 
 export function BottomNav({ path, newCount }: { path: string; newCount: number }) {

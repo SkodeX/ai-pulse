@@ -33,7 +33,7 @@ export function MoreView({ section, briefing, latest }: { section?: string; brie
       <nav className="chips" aria-label="Bereiche">
         <a className="pill" href="#/briefing">Briefing</a>
         <a className="pill" href="#/gemerkt">Gemerkt</a>
-        <a className="pill" href="#/top">Top 50</a>
+        <a className="pill" href="#/fristen">Fristen</a>
         <a className="pill" href="#/einstellungen">Einstellungen</a>
       </nav>
 
