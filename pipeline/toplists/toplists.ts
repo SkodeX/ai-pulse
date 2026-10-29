@@ -8,11 +8,17 @@ import { sleep } from '../lib/util.ts'
 
 export interface StarHistory { snapshots: { date: string; stars: Record<string, number> }[] }
 
-interface ListDef { id: string; title: string; hint: string; queries: string[] }
+interface ListDef { id: string; title: string; hint: string; queries: string[]; minStars?: number; accept?: (it: TopListItem) => boolean }
+
+// Echter Skill bzw. Skill-Sammlung: Skill-Topic oder „skill" in Name/Beschreibung (Wunsch 2026-10-29: eigene Top 50 nur für Claude Skills)
+export function isSkillRepo(it: TopListItem): boolean {
+  return it.topics.some(t => /skill/.test(t)) || /\bskills?\b|SKILL\.md/i.test(`${it.name} ${it.description}`)
+}
 
 export const GITHUB_LISTS: ListDef[] = [
   { id: 'repos', title: 'GitHub-Repos (KI)', hint: 'Agenten, Frameworks, Coding-Tools, lokale Modelle, RAG', queries: ['topic:llm', 'topic:ai-agents', 'topic:rag', 'topic:generative-ai', 'topic:local-llm'] },
-  { id: 'skills', title: 'Claude Skills & Plugins', hint: 'Skills, Plugins und Agenten für Claude Code (auch Codex/Cursor-Regeln)', queries: ['topic:claude-code', 'topic:claude-skills', 'topic:agent-skills', 'claude code in:name,description topic:plugin'] },
+  { id: 'skills', title: 'Claude Skills', hint: 'Skills und Skill-Sammlungen für Claude (SKILL.md, auch für Codex/Cursor nutzbar)', queries: ['topic:claude-skills', 'topic:agent-skills', 'topic:claude-skill', 'topic:skills claude', 'skill in:name claude'], minStars: 100, accept: isSkillRepo },
+  { id: 'claude-code', title: 'Claude-Code-Tools & Plugins', hint: 'Plugins, Harnesses, Erweiterungen und Helfer rund um Claude Code', queries: ['topic:claude-code', 'topic:claude-code-plugin', 'claude code in:name,description topic:plugin'] },
   { id: 'mcp', title: 'MCP-Server', hint: 'Beliebte und neue Model-Context-Protocol-Server', queries: ['topic:mcp-server', 'topic:model-context-protocol'] },
 ]
 
@@ -23,8 +29,8 @@ function dateMinus(now: Date, days: number): string {
   return new Date(now.getTime() - days * DAY).toISOString().slice(0, 10)
 }
 
-export async function searchGithub(query: string, now: Date, token?: string): Promise<{ items: Record<string, unknown>[]; error?: string }> {
-  const q = `${query} stars:>300 pushed:>${dateMinus(now, 60)} archived:false fork:false`
+export async function searchGithub(query: string, now: Date, token?: string, minStars = 300): Promise<{ items: Record<string, unknown>[]; error?: string }> {
+  const q = `${query} stars:>${minStars} pushed:>${dateMinus(now, 60)} archived:false fork:false`
   const url = `https://api.github.com/search/repositories?q=${encodeURIComponent(q)}&sort=stars&order=desc&per_page=50`
   const headers: Record<string, string> = { Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' }
   if (token) headers['Authorization'] = `Bearer ${token}`
@@ -106,8 +112,8 @@ export async function buildTopLists(history: StarHistory, now: Date, token?: str
   const errors: string[] = []
   const lists: TopList[] = []
   const allStars: Record<string, number> = {}
-  const taken = new Set<string>()   // jedes Repo nur in der spezifischsten Liste (Reihenfolge: Skills → MCP → allgemein)
-  const order = ['skills', 'mcp', 'repos']
+  const taken = new Set<string>()   // jedes Repo nur in der spezifischsten Liste (Reihenfolge: Skills → Claude Code → MCP → allgemein)
+  const order = ['skills', 'claude-code', 'mcp', 'repos']
   const results = new Map<string, Map<string, TopListItem>>()
   let first = true
   for (const def of [...GITHUB_LISTS].sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id))) {
@@ -115,12 +121,12 @@ export async function buildTopLists(history: StarHistory, now: Date, token?: str
     for (const q of def.queries) {
       if (!first) await sleep(pauseMs)   // Suche: 10/min anonym, 30/min mit Token
       first = false
-      let r = await searchGithub(q, now, token)
-      if (r.error?.endsWith('rate-limit')) { await sleep(61_000); r = await searchGithub(q, now, token) }
+      let r = await searchGithub(q, now, token, def.minStars)
+      if (r.error?.endsWith('rate-limit')) { await sleep(61_000); r = await searchGithub(q, now, token, def.minStars) }
       if (r.error) errors.push(r.error)
       for (const raw of r.items) {
         const it = repoItem(raw)
-        if (!BAD.test(it.name) && !taken.has(it.id)) byId.set(it.id, it)
+        if (!BAD.test(it.name) && !taken.has(it.id) && (!def.accept || def.accept(it))) byId.set(it.id, it)
       }
     }
     for (const it of byId.values()) { allStars[it.id] = it.stars; taken.add(it.id) }

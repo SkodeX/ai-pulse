@@ -31,3 +31,13 @@ test('wöchentlicher Takt ab Sonntag (Berlin)', () => {
   assert.equal(toplistsDue('2026-10-25T06:07:00Z', new Date('2026-10-27T06:07:00Z')), false, 'Sonntag gebaut, Dienstag nicht fällig')
   assert.equal(toplistsDue('2026-10-24T06:07:00Z', NOW), true, 'Samstag gebaut, Sonntag fällig')
 })
+
+test('Claude Skills: nur echte Skills und Skill-Sammlungen', async () => {
+  const { isSkillRepo } = await import('../toplists/toplists.ts')
+  const it = (name: string, description: string, topics: string[] = []) => repoItem({ full_name: name, html_url: 'u', description, stargazers_count: 1, topics })
+  assert.ok(isSkillRepo(it('anthropics/skills', 'Agent Skills')))
+  assert.ok(isSkillRepo(it('Leonxlnx/taste-skill', 'Design taste', ['claude-code'])))
+  assert.ok(isSkillRepo(it('x/y', 'Tool', ['agent-skills'])))
+  assert.ok(!isSkillRepo(it('farion1231/cc-switch', 'Switch providers for Claude Code', ['claude-code', 'codex'])))
+  assert.ok(!isSkillRepo(it('a/skillet', 'Kitchen planner')))
+})
