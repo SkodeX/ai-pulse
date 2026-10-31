@@ -18,6 +18,12 @@ test('Duplikate: gleiches Modell, gleicher Schlüsselanfang, kein Fehlalarm bei 
   const e = story({ id: '5', clusterKey: 'anthropic-ipo-governance-structure', category: 'funding', title: 'Nachfolgelisten im S-1' })
   const pairs = duplicatePairs([a, b, c, d, e]).map(([x, y]) => `${x.id}${y.id}`)
   assert.deepEqual(pairs.sort(), ['12', '45'])
+  // Lauf 2026-10-31: verschiedene Copilot-Funktionen sind kein Duplikat, zwei Meldungen zu Copilot Fusion schon
+  const f1 = story({ id: '6', clusterKey: 'github-copilot-plugin-controls-ga', category: 'opensource', title: 'Plugin-Standards' })
+  const f2 = story({ id: '7', clusterKey: 'github-copilot-shared-automations-rollout', category: 'opensource', title: 'Geteilte Automations' })
+  const f3 = story({ id: '8', clusterKey: 'github-copilot-fusion-general-availability', category: 'opensource', title: 'Fusion GA' })
+  const f4 = story({ id: '9', clusterKey: 'github-copilot-fusion-local-model-routing', category: 'opensource', title: 'Fusion lokal' })
+  assert.deepEqual(duplicatePairs([f1, f2, f3, f4]).map(([x, y]) => `${x.id}${y.id}`), ['89'])
 })
 
 test('Befunde: Werbung, Score, Hype, Aufrufe, Briefing-Verweis', () => {

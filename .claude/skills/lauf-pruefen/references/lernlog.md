@@ -2,6 +2,15 @@
 
 Neueste Einträge oben. Je Eintrag: Lauf, Kennzahlen, Befunde nach Art (A klein · B Bewertung/Prompt · C Struktur · D Check), Maßnahmen.
 
+## 2026-10-31 · 2026-10-31-1445-midday (dritter echter Lauf, `--limit 80`, Basis älter als 72 h)
+
+`stories 53 · claude 53 · regel 0 · zusammenfassungen 25 · duplikate 1 · duplikateNeu 1 · aufrufe 8 · tokenIn 85521 · tokenOut 75754 · quellenOk 96 % · allgemein 8 %`
+
+- Wirkung der Fixes vom 27.10.: „Allgemein“ 24 % → 8 % (Anbieter = Akteur greift), keine Rückschritte, Briefing ohne Doppelungen, 8 Aufrufe.
+- **D** Fünf Duplikat-Fehlalarme durch die Zwei-Teile-Regel (`github-copilot-plugin…` vs `github-copilot-automations…`, `ai-labs-…`, `google-gemini-…`). → Schlüsselanfang jetzt drei Teile, zwei nur wenn der zweite ein Ereignis ist (`ipo`, `funding`, `lawsuit` …); Testfall aus diesem Lauf. Übrig: Copilot Fusion GA vs. Fusion lokales Routing (Grenzfall, bleibt Warnung).
+- Stichprobe mit dem Nutzer (15 Stories, Top/Mitte/Unten): alles „passt“, Funding-Gewichtung „so lassen“ → keine Änderung an Rubriken oder Profil.
+- Notfallpfad (`AIPULSE_SIMULATE_LIMIT=1`): Limit erkannt, Umschaltung auf `api`, Fixture-Antworten für triage/summarize/brief, Kostenbuch nur in `.cache/` (zusammen ≈ 0,008 USD gerechnet), `state/usage` unberührt.
+
 ## 2026-10-27 · Umsetzung der B-Vorschläge (vom Nutzer freigegeben)
 
 - `feldregeln.txt`: `providers` = handelnde Firma, nicht angebundene/erwähnte Werkzeuge (mit zwei Beispielen); `models` analog. `clusterKey`: Folgemeldungen zu einem Release der letzten 72 h (Verfügbarkeit in weiteren Produkten, Rollout, Einordnung, erste Tests) übernehmen den Release-Schlüssel; eigener Schlüssel nur bei neuem Ereignis.

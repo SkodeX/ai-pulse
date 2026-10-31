@@ -15,6 +15,7 @@ const SPONSOR_HINT_RE = /\b(angebot|anzeige|sponsored|sponsor|webinar|workshop|r
 const EN_WORDS_RE = /\b(the|and|with|for|this|that|from|will|are|is)\b/gi
 const HOUR = 3_600_000
 // Floskeln aus Changelog-Titeln, die nichts über das Ereignis sagen
+const EVENT_WORDS = new Set(['ipo', 'funding', 'acquisition', 'lawsuit', 'layoffs', 'outage', 'breach', 'leak', 'merger', 'ruling'])
 const GENERIC = new Set(['allgemein', 'verfugbar', 'generally', 'available', 'neue', 'neues', 'stellt', 'bringt', 'veroffentlicht', 'release', 'update'])
 
 const short = (s: Story) => `„${s.title.slice(0, 70)}“`
@@ -31,13 +32,16 @@ export function duplicatePairs(stories: Story[]): [Story, Story, string][] {
       if (Math.abs(Date.parse(a.firstSeen) - Date.parse(b.firstSeen)) > 72 * HOUR) continue
       const sharedModel = (a.models ?? []).find(m => (b.models ?? []).includes(m))
       const { common, jaccard } = overlap(tokens.get(a)!, tokens.get(b)!)
-      const pa = a.clusterKey.split('-').slice(0, 2).join('-')
+      // Gleicher Schlüsselanfang: drei Teile (github-copilot-fusion-…) oder zwei, wenn der zweite ein Ereignis ist (anthropic-ipo-…);
+      // zwei Teile allein sind zu grob (github-copilot-plugin… ≠ github-copilot-automations…, Lauf 2026-10-31)
+      const parts = a.clusterKey.split('-')
+      const pa = parts.slice(0, EVENT_WORDS.has(parts[1] ?? '') ? 2 : 3).join('-')
       const differentModels = (a.models?.length ?? 0) > 0 && (b.models?.length ?? 0) > 0 && !sharedModel
       let why = ''
       if (sharedModel && a.category === b.category && a.category === 'modelle') why = `gleiches Modell ${sharedModel}`
       else if (jaccard >= 0.4 && common >= 4) why = `Titel ähnlich (Jaccard ${jaccard.toFixed(2)})`
       else if (keyNorm(a.clusterKey) === keyNorm(b.clusterKey)) why = 'gleicher Schlüssel'
-      else if (a.category === b.category && !differentModels && pa === b.clusterKey.split('-').slice(0, 2).join('-')) why = `Schlüssel beginnen gleich (${pa}-…)`
+      else if (a.category === b.category && !differentModels && pa.split('-').length >= 2 && (b.clusterKey === pa || b.clusterKey.startsWith(`${pa}-`))) why = `Schlüssel beginnen gleich (${pa}-…)`
       if (why) out.push([a, b, why])
     }
   }
